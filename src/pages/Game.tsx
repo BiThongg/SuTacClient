@@ -6,15 +6,15 @@ import { useEffect } from "react";
 
 
 function Game() {
-  const {
-    ticTacToe,
-    handleTicTacToe,
-    isTurnX,
-    pickPlayer,
-    score,
-    typeGame,
-    setScore,
-  } = useTicTacToe();
+  // const {
+  //   ticTacToe,
+  //   handleTicTacToe,
+  //   isTurnX,
+  //   pickPlayer,
+  //   score,
+  //   typeGame,
+  //   setScore,
+  // } = useTicTacToe();
 
   useEffect(() => {
     const localScore = localStorage.getItem("score")

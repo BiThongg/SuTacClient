@@ -2,12 +2,28 @@ import OOutline from "@components/icons/OOutline";
 import XOutline from "@components/icons/XOutline";
 import Btn from "@components/shared/Btn";
 import Logo from "@components/shared/Logo";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import socketService from "@app/socket/Socket";
 
 function Home() {
   const navigate = useNavigate();
   const [pickPlayer, setPickPlayer] = useState<boolean>(true);
+
+  useEffect(() => {
+    socketService.connect();
+  })
+
+  const register = () => {
+    socketService.emit("register", { name: "trietdeptrai" })
+  }
+
+  const getListUsers = () => {
+    socketService.emit("get_users")
+  }
+
+  // how to add a new func for listening event from server 
+  socketService.listen("list_of_user", (data: any) => { console.log(data) })
 
   const handleClick = (typeGame: string) => {
     const localTypeGame = localStorage.getItem("typeGame") || "";
@@ -39,17 +55,15 @@ function Home() {
         <article className="bg-black-400 py-3 rounded-lg flex w-full mb-5">
           <button
             onClick={() => !pickPlayer && handlePickPlayer()}
-            className={`${
-              pickPlayer && `bg-gray-400 rounded-lg px-3 py-3 ml-3`
-            } w-1/2 mx-auto flex justify-center items-center`}
+            className={`${pickPlayer && `bg-gray-400 rounded-lg px-3 py-3 ml-3`
+              } w-1/2 mx-auto flex justify-center items-center`}
           >
             <XOutline state={!pickPlayer} />
           </button>
           <button
             onClick={() => pickPlayer && handlePickPlayer()}
-            className={`${
-              !pickPlayer && `bg-gray-400 rounded-lg px-6 py-3 mr-3`
-            } w-1/2 mx-auto flex justify-center items-center`}
+            className={`${!pickPlayer && `bg-gray-400 rounded-lg px-6 py-3 mr-3`
+              } w-1/2 mx-auto flex justify-center items-center`}
           >
             <OOutline state={pickPlayer} />
           </button>
@@ -69,11 +83,15 @@ function Home() {
         </div>
 
         <div
-          onClick={() => handleClick("player")}
+          onClick={() => register()}
           className="w-full bg-blue-500 rounded-2xl pb-2"
         >
           <Btn classCSS="bg-blue-400 rounded-2xl w-full">
             new Game (vs player)
+            Room: {<input type="text" />}
+          </Btn>
+          <Btn classCSS="bg-blue-400 rounded-2xl w-full" onClick={getListUsers}>
+            get list user
           </Btn>
         </div>
       </article>
