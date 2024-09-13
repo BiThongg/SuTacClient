@@ -41,6 +41,10 @@ class SocketService {
       console.log('Disconnected from the server.');
     }
   }
+
+  status(): boolean {
+    return this.socket?.connected || false;
+  }
 }
 
 const socketService = new SocketService();

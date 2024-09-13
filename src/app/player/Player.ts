@@ -20,6 +20,10 @@ class Player {
       throw new Error("Player is not associated with a game.");
     }
   }
+
+  isBot(): boolean {
+    return this.user?.id.startsWith("BOT_") || false;
+  }
 }
 
 export { Player };

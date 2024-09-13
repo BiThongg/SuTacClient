@@ -1,5 +1,5 @@
 import User from '../user/User';
-import  Game  from '../game/Game';
+import Game from '../game/Game';
 
 enum Status {
     WAITING = "WAITING",
@@ -24,7 +24,7 @@ class Room {
     guests: User[] = [];
     game!: Game; // what means of this statement? game!: Game  
 
-    constructor(id:string, name: string, owner: User) {
+    constructor(id: string, name: string, owner: User) {
         this.id = id;
         this.name = name;
         this.owner = new Participant(owner);
@@ -99,4 +99,4 @@ class Room {
     }
 }
 
-export { Room, Participant };
+export default { Room, Participant };

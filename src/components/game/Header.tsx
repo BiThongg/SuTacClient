@@ -5,8 +5,10 @@ import OOutline from "@components/icons/OOutline";
 import Restart from "@assets/icon-restart.svg";
 import { ModalContext } from "@context/ContextModal";
 import { useContext } from "react";
+import { Cell } from "@app/Utils";
 
-function Header({ isTurnX }: { isTurnX: boolean }) {
+
+function Header({ isTurnX }: { isTurnX: String}) {
   const modal = useContext(ModalContext);
 
   const handleRestart = () => {
@@ -29,7 +31,7 @@ function Header({ isTurnX }: { isTurnX: boolean }) {
 
       <div className="bg-black-500 pb-[0.2rem] rounded-[0.2rem]">
         <Btn classCSS="flex bg-black-300 rounded-[0.2rem] gap-2 px-1 py-2">
-          {isTurnX ? (
+          {isTurnX == Cell.X ? (
             <XOutline state={true} width={18} height={18} />
           ) : (
             <OOutline state={true} width={18} height={18} />

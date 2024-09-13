@@ -25,7 +25,8 @@
       "@router/*": ["src/router/*"],
       "@context/*": ["src/context/*"],
       "@hooks/*": ["src/hooks/*"],
-      "@interfaces/*": ["src/interfaces/*"]
+      "@interfaces/*": ["src/interfaces/*"],
+      "@app/*": ["src/app/*"]
     }
   },
   "include": ["src"],
