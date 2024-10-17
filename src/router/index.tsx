@@ -3,12 +3,20 @@ import Home from "@pages/Home";
 import Game from "@pages/Game";
 import ErrorPage from "@pages/Error";
 import Room from "@pages/Room";
+import Auth from "@pages/Auth";
 
 const router = () => {
   const routes = useRoutes([
     {
+      path: "/auth",
+      element: <Auth />,
+      errorElement: <ErrorPage />,
+    },
+    {
       path: "/",
-      element: <Home />,
+      element: (
+        <Home />
+      ),
       errorElement: <ErrorPage />,
     },
     {
@@ -19,11 +27,12 @@ const router = () => {
     {
       path: "/error",
       element: <ErrorPage />,
-      
     },
     {
       path: "/room",
-      element: <Room />,
+      element: (
+        <Room />
+      ),
     }
   ]);
   return routes;

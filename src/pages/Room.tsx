@@ -28,15 +28,26 @@ function Room() {
   socketService.listen('started_game',
     (data: { message: string, game: Game }) => {
       console.log(data.message);
+      console.log(data.game);
+
       window.game = data.game;
       console.log(window.game);
       navigate('/game');
     });
 
+  socketService.listen('room_info', (data: { room: Room }) => {
+    setRoom(data.room);
+  })
+
+
+  useEffect(() => {
+    socketService.emit('get_room', { "user_id": player.id });
+  }, [])
+
 
 
   const onStartGame = () => {
-    socketService.emit('start_game', { "room_id": room.id, "game_type": pickGameType });
+    socketService.emit('start_game', { "room_id": room.id, "game_type": pickGameType, "user_id": player.id });
   }
 
   const handlePickPlayer = () => {
@@ -54,6 +65,7 @@ function Room() {
   }
 
   const onListenAddBotEvent = (data: { room: Room }) => {
+    console.log(data.room);
     window.room = data.room;
     setRoom(data.room);
   }

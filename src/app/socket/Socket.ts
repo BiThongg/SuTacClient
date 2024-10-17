@@ -1,6 +1,12 @@
 import { io, Socket } from 'socket.io-client';
-// import { env } from 'process';
 
+
+
+interface User {
+  id: string;
+  sid: string;
+  name: string;
+}
 
 class SocketService {
   private socket: Socket | null = null;
@@ -16,9 +22,15 @@ class SocketService {
   connect(): void {
     if (!this.socket) return;
 
-    this.socket.on('connect', () => {
-      console.log('Connected to the server. hhaah');
-    });
+    const user: User = JSON.parse(localStorage.getItem('user') || '{}');
+
+    this.socket = io(this.url, {
+      query: { user_id: user.id },
+    })
+
+    this.socket.on('error', (error: any) => {
+      localStorage.removeItem('user')
+    })
   }
 
   // Listen to events
