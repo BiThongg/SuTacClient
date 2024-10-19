@@ -1,6 +1,6 @@
 import socketService from "@app/socket/Socket";
 import useSocketConnect from "@hooks/useSocketConnect";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import User from "@interfaces/User";
 import Loading from "@components/loading/Loading";
@@ -10,7 +10,7 @@ import Btn from "@components/shared/Btn";
 function Auth() {
   const { isLoading } = useSocketConnect();
   const navigate = useNavigate();
-  const userNameRef = useRef<HTMLInputElement>();
+  const userNameRef = useRef<any>();
 
   useEffect(() => {
     if (window.localStorage.getItem("user")) {

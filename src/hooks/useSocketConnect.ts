@@ -1,7 +1,7 @@
 import socketService from "@app/socket/Socket";
 import { useEffect, useState } from "react";
 
-export default function useSocketConnect() {
+export default function useSocketConnect() : { isLoading: boolean } {
   const [isLoading, setIsLoading] = useState<boolean>(true)
 
   useEffect(() => {
@@ -9,7 +9,6 @@ export default function useSocketConnect() {
       onHandleLoading();
     }, 2000);
     return () => clearInterval(interval);
-
   }, [])
 
   const onHandleLoading = () => {

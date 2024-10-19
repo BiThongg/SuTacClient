@@ -22,7 +22,8 @@ class Player {
   }
 
   isBot(): boolean {
-    return this.user?.id.startsWith("BOT_") || false;
+    const index = this.user?.name.indexOf("BOT_");
+    return index == -1 ? false : true
   }
 }
 

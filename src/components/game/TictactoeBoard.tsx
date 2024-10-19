@@ -30,7 +30,7 @@ export default function TicTacToeBoard({
               //   } rounded-md py-6 h-full w-full`}
               classCSS="bg-black-300 rounded-md py-6 h-full w-full"
               onClick={() =>
-                onMove({ x: i, y: j })
+                onMove({ x: j, y: i })
               }
             >
               <img src={
