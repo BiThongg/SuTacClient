@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from "react-router-dom";
 import Btn from '@components/shared/Btn';
 import Logo from '@components/shared/Logo';
 import User from '@app/user/User';
@@ -7,7 +8,6 @@ import Loading from '@components/loading/Loading';
 import Spin from "@assets/spin.svg"
 import RoomClass from '@app/room/Room';
 
-import { useNavigate } from "react-router-dom";
 import socketService from '@app/socket/Socket';
 import useSocketConnect from '@hooks/useSocketConnect';
 
@@ -22,30 +22,47 @@ export default function Room() {
   const [room, setRoom] = useState<RoomClass>(window?.room || {})
   const navigate = useNavigate();
   const { isLoading } = useSocketConnect()
+  const preventPointer = player.id !== room.owner.info.id ? 'pointer-events-none' : '';
 
   socketService.listen('started_game',
     (data: { message: string, game: Game }) => {
-      console.log(data.message);
+      // console.log(data.message);
       console.log(data.game);
       window.game = data.game;
-      console.log(window.game);
       navigate('/game');
     });
+
   socketService.listen('room_info', (data: { room: RoomClass }) => {
     setRoom(data.room);
   })
-  socketService.listen('kicked', (data: { room: RoomClass }) => {
-    setRoom(data.room);
-  })
 
-  socketService.listen('added_bot', (data: { room: RoomClass }) => onListenAddBotEvent(data));
-  socketService.listen('add_bot_failed', (data: { message: string }) => console.log(data.message));
-  socketService.listen('start_game_failed', (data: { message: string }) => {
-    console.log(data.message);
+  socketService.listen('kicked', (data: { room: RoomClass }) => {
+    window.room = data.room
+    if (room?.competitor?.info?.id === player.id && data.room.id == room.id) {
+      window.room = {}
+      console.log("hehehehe")
+      navigate('/');
+    }
+
+    if (data.room.owner.info.id === player.id) {
+      setRoom(data.room);
+    }
   });
 
+  socketService.listen('added_bot', (data: { room: RoomClass }) => onListenAddBotEvent(data));
+  // socketService.listen('add_bot_failed', (data: { message: string }) => console.log(data.message));
+  socketService.listen('start_game_failed', (data: { message: string }) => {
+    // console.log(data.message);
+  });
   socketService.listen("joined_room", (data: { room: RoomClass }) => {
     setRoom(data.room);
+  });
+  socketService.listen("game_type_changed", (data: { game_type: string, room_id: string }) => {
+    console.log(data)
+
+    if (room.id == data.room_id) {
+      setGameType(data.game_type);
+    }
   });
 
   useEffect(() => {
@@ -56,14 +73,9 @@ export default function Room() {
     socketService.emit('start_game', { "room_id": room.id, "game_type": pickGameType, "user_id": player.id });
   }
 
-  const handlePickPlayer = () => {
-    if (pickGameType === GameType.SUMOKU) {
-      setGameType(GameType.TIC_TAC_TOE);
-    }
-
-    else {
-      setGameType(GameType.SUMOKU);
-    }
+  const handlePickGameType = (gameType: GameType) => {
+    // console.log(gameType)
+    socketService.emit('change_game_type', { "room_id": room.id, "game_type": gameType });
   }
 
   const onAddBot = () => {
@@ -89,23 +101,22 @@ export default function Room() {
 
           <article className="bg-black-400 py-3 rounded-lg flex w-full mb-5">
             <button
-              onClick={() => pickGameType !== GameType.SUMOKU && handlePickPlayer()}
+              onClick={() => handlePickGameType(GameType.SUMOKU)}
               className={`${pickGameType === GameType.SUMOKU && `bg-gray-400 rounded-lg px-3 py-3 ml-3`
-                } w-1/2 mx-auto flex justify-center items-center`}
+                } w-1/2 mx-auto flex justify-center items-center ${preventPointer}`}
             >
               <p className={pickGameType === GameType.SUMOKU ?
                 `text-black-400 font-bold text-lg` : `text-gray-400 font-bold text-lg`}>SUMOKU</p>
             </button>
             <button
-              onClick={() => pickGameType !== GameType.TIC_TAC_TOE && handlePickPlayer()}
+              onClick={() => handlePickGameType(GameType.TIC_TAC_TOE)}
               className={`${pickGameType === GameType.TIC_TAC_TOE && `bg-gray-400 rounded-lg px-6 py-3 mr-3`
-                } w-1/2 mx-auto flex justify-center items-center`}
+                } w-1/2 mx-auto flex justify-center items-center ${preventPointer}`}
             >
               <p className={pickGameType === GameType.TIC_TAC_TOE ?
                 `text-black-400 font-bold text-lg` : `text-gray-400 font-bold text-lg`}>TIC TAC TOE</p>
             </button>
           </article>
-
           {<h3 className="text-gray-500">ROOM ID : {room?.id}</h3>}
         </article>
 
@@ -118,8 +129,8 @@ export default function Room() {
 
           <div className="w-[20%] rounded-2xl pb-2 cursor-auto flex flex-row gap-2 w-full">
             <Btn classCSS="bg-blue-400 rounded-full w-full py-2" onClick={() => {
-              console.log(room)
-              console.log(player)
+              // console.log(room)
+              // console.log(player)
             }}>
               <div className='text-[15px] flex justify-center'>
                 <p>User Name:</p>
@@ -129,8 +140,8 @@ export default function Room() {
 
             {room?.competitor ? (
               <div className="bg-blue-400 rounded-full w-full py-2 flex justify-center text-black-400 text-[15px] p-3" onClick={() => onKick(room?.competitor.info.id)}>
-                {room.competitor.info.name}
-
+                <p>User Name:</p>
+                <span className='text-white'>{room.competitor.info.name}</span>
                 {
                   room.owner.info.id === player.id &&
                   <button className='bg-red-400 rounded-full w-10 px-3 flex items-center relative group'>

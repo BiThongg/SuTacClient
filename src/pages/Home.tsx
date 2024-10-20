@@ -38,7 +38,7 @@ function Home() {
   }
 
   const onCreateRoom = () => {
-    socketService.emit("create_room", { room_name: "vai chuong", user_id: user?.id })
+    socketService.emit("create_room", { room_name: "", user_id: user?.id })
   }
 
   const onListenRoomCreateEvent = (data: { room: Room }) => {

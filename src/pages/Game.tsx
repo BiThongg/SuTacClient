@@ -5,13 +5,21 @@ import Loading from "@components/loading/Loading";
 import { GameHook } from "@interfaces/GameHook";
 import useSocketConnect from "@hooks/useSocketConnect";
 import useBotMode from "@hooks/useBotMode";
-// import usePvPMode from "@hooks/usePvPMode";
+import { useEffect, useState } from "react";
+import usePvPMode from "@hooks/usePvPMode";
 
 export default function Game() {
 
   const { isLoading }: { isLoading: boolean } = useSocketConnect()
   const sizeBoard = window?.game?.board.length
-  const { game, onMove }: GameHook = useBotMode()
+
+  const { game, onMove } = window?.game?.players.filter(e => {
+    const name = e.user?.name
+    const index = name?.indexOf("BOT_")
+
+    return index == -1 ? false : true
+  }).length > 0
+    ? useBotMode() : usePvPMode()
 
   return (
     isLoading ? <Loading /> :
@@ -21,5 +29,6 @@ export default function Game() {
           : (<SumokuBoard board={game?.board} onMove={onMove} />)}
       </section>
   );
+
 }
 
