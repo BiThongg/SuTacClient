@@ -4,6 +4,8 @@ import Logo from '@components/shared/Logo';
 import User from '@app/user/User';
 import Game from '@app/game/Game';
 import Loading from '@components/loading/Loading';
+import Spin from "@assets/spin.svg"
+import RoomClass from '@app/room/Room';
 
 import { useNavigate } from "react-router-dom";
 import socketService from '@app/socket/Socket';
@@ -14,37 +16,41 @@ enum GameType {
   TIC_TAC_TOE = "TIC_TAC_TOE",
 }
 
-
-function Room() {
+export default function Room() {
   const [pickGameType, setGameType] = useState<string>(GameType.SUMOKU);
   const [player, _] = useState<User>(JSON.parse(localStorage.getItem('user') || '{}'));
-  const [room, setRoom] = useState<any>(window?.room || {})
-  const { isLoading } = useSocketConnect()
+  const [room, setRoom] = useState<RoomClass>(window?.room || {})
   const navigate = useNavigate();
+  const { isLoading } = useSocketConnect()
 
-  socketService.listen('added_bot', (data: { room: Room }) => onListenAddBotEvent(data));
-  socketService.listen('add_bot_failed', (data: { message: string }) => console.log(data.message));
-  socketService.listen('start_game_failed', (data: { message: string }) => console.log(data.message));
   socketService.listen('started_game',
     (data: { message: string, game: Game }) => {
       console.log(data.message);
       console.log(data.game);
-
       window.game = data.game;
       console.log(window.game);
       navigate('/game');
     });
-
-  socketService.listen('room_info', (data: { room: Room }) => {
+  socketService.listen('room_info', (data: { room: RoomClass }) => {
+    setRoom(data.room);
+  })
+  socketService.listen('kicked', (data: { room: RoomClass }) => {
     setRoom(data.room);
   })
 
+  socketService.listen('added_bot', (data: { room: RoomClass }) => onListenAddBotEvent(data));
+  socketService.listen('add_bot_failed', (data: { message: string }) => console.log(data.message));
+  socketService.listen('start_game_failed', (data: { message: string }) => {
+    console.log(data.message);
+  });
+
+  socketService.listen("joined_room", (data: { room: RoomClass }) => {
+    setRoom(data.room);
+  });
 
   useEffect(() => {
     socketService.emit('get_room', { "user_id": player.id });
   }, [])
-
-
 
   const onStartGame = () => {
     socketService.emit('start_game', { "room_id": room.id, "game_type": pickGameType, "user_id": player.id });
@@ -64,12 +70,14 @@ function Room() {
     socketService.emit('add_bot', { "room_id": room.id });
   }
 
-  const onListenAddBotEvent = (data: { room: Room }) => {
-    console.log(data.room);
+  const onListenAddBotEvent = (data: { room: RoomClass }) => {
     window.room = data.room;
     setRoom(data.room);
   }
 
+  const onKick = (kick_id: string) => {
+    socketService.emit('kick', { "room_id": room.id, "kick_id": kick_id, "owner_id": player.id });
+  }
 
   return (
     isLoading ? <Loading /> :
@@ -102,29 +110,53 @@ function Room() {
         </article>
 
         <article className="flex flex-col gap-3 w-[90%]">
-          <div
-            className="w-full bg-yellow-500 rounded-2xl pb-2"
-          >
+          <div className="w-full bg-yellow-500 rounded-2xl pb-2">
             <Btn classCSS="bg-yellow-400 rounded-2xl w-full py-2" onClick={() => onStartGame()}>
               START GAME
             </Btn>
           </div>
 
-          <div
-            className="w-[20%] rounded-2xl pb-2 cursor-auto flex flex-row gap-2 w-full"
-          >
-            <Btn classCSS="bg-blue-400 rounded-full w-full py-2" onClick={() => console.log(room)}>
-              {player.id + " " + player.name}
+          <div className="w-[20%] rounded-2xl pb-2 cursor-auto flex flex-row gap-2 w-full">
+            <Btn classCSS="bg-blue-400 rounded-full w-full py-2" onClick={() => {
+              console.log(room)
+              console.log(player)
+            }}>
+              <div className='text-[15px] flex justify-center'>
+                <p>User Name:</p>
+                <span className='text-white'>{room.owner.info.name}</span>
+              </div>
             </Btn>
 
-            <Btn classCSS="bg-blue-400 rounded-full w-full py-2" onClick={() => onAddBot()}>
-              {!room?.competitor ? "ADD BOT" : room.competitor.info.name}
-            </Btn>
+            {room?.competitor ? (
+              <div className="bg-blue-400 rounded-full w-full py-2 flex justify-center text-black-400 text-[15px] p-3" onClick={() => onKick(room?.competitor.info.id)}>
+                {room.competitor.info.name}
+
+                {
+                  room.owner.info.id === player.id &&
+                  <button className='bg-red-400 rounded-full w-10 px-3 flex items-center relative group'>
+                    <p>X</p>
+                    <div className="absolute w-full h-full bg-red-500 hidden group-hover:block bottom-11 left-6 text-white rounded-full pt-3">
+                      <p className="">Kick</p>
+                    </div>
+                  </button>
+                }
+
+              </div>
+            ) :
+              (
+                <div className='bg-blue-400 rounded-full w-full py-2 flex justify-around text-black-400 text-[15px] p-3'>
+                  <div className='flex justify-center items-center gap-1 text-[15px]'>
+                    <p className=''>Waiting</p>
+                    <img src={Spin} />
+                  </div>
+                  <button className='bg-red-400 rounded-full w-15 px-3 py-3' onClick={() => onAddBot()}>
+                    Add Bot
+                  </button>
+                </div>
+              )}
           </div>
-
         </article>
       </section>
   );
 }
 
-export default Room;

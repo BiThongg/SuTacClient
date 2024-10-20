@@ -4,39 +4,35 @@ import IconO from "@assets/icon-o.svg";
 import { Cell } from "@app/Utils";
 
 export default function SumokuBoard({
-  board
+  board,
+  onMove
 }: {
   board: Cell[][];
+  onMove: (point: { x: number, y: number }) => void;
 }) {
 
   return (
-    <section>
-      <table className="table-auto border-collapse w-full">
-        <tbody>
-          {board.map((row, i) => (
-            <tr key={i}>
-              {row.map((col, j) => (
-                <td
-                  key={j}
-                  className="border bg-black-500 w-[40px] h-[40px] rounded-md"
-                  data-value={col.valueOf()}
-                >
-                  <Btn
-                    onClick={() => { }}
-                    classCSS={'align-middle w-full'}
-                  >
-                    <img src={
-                      col === Cell.X ? IconX : col === Cell.O ? IconO : undefined
-                    } alt="" className="w-6 mx-auto" />
-                  </Btn>
-                </td>
-              ))}
-            </tr>
-          ))}
-          <br />
-        </tbody>
-      </table>
-    </section>
+    <table className="table-auto border-collapse w-full">
+      <tbody>
+        {board.map((row, i) => (
+          <tr key={i}>
+            {row.map((col, j) => (
+              <td
+                key={j}
+                className="border bg-black-500 h-20 rounded-md cursor-pointer"
+                onClick={() => {
+                  onMove({ x: j, y: i });
+                }}>
+                <img src={
+                  col === Cell.X ? IconX : col === Cell.O ? IconO : undefined
+                } alt="" className="w-8 mx-auto" />
+              </td>
+            ))}
+          </tr>
+        ))}
+        <br />
+      </tbody>
+    </table>
   );
 }
 

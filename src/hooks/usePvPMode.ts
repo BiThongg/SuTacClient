@@ -1,3 +1,4 @@
+
 import { Game } from "@interfaces/Game";
 import { Player } from "@app/player/Player";
 import { Cell } from "@app/Utils";
@@ -9,38 +10,15 @@ import socketService from "@app/socket/Socket";
 import User from "@app/user/User";
 
 
-export default function useBotMode(): GameHook {
+export default function usePvPMode(): GameHook {
   const [game, setGame] = useState<Game>(window?.game || {});
   const [user, __] = useState<User>(localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user') || '{}') : {});
-  const [isWaitBot, setIsWaitBot] = useState<boolean>(false)
-
-
-
-  const botSymbol: string = game.players.filter(e => {
-    const name = e.user?.name
-    const index = name?.indexOf("BOT_")
-
-    return index == -1 ? false : true
-
-  })[0].symbol
 
   const player: Player = game.players.filter(player =>
     player?.user?.id === user.id
   )[0]
 
-  useEffect(() => {
-    const botTurnInterval = setInterval(() => {
-      if (game?.turn === botSymbol && !isWaitBot) {
-        const botMoveRequest: BotMoveRequest = { "room_id": window?.room?.id };
-        socketService.emit('bot_move', botMoveRequest);
-      }
-    }, 1000)
-
-    return () => clearInterval(botTurnInterval)
-  })
-
   socketService.listen('moved', (data: { game: Game }) => {
-    console.log(data.game)
     setGame(data.game)
   });
 

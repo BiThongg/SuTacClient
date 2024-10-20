@@ -4,7 +4,6 @@ import Game from "@pages/Game";
 import ErrorPage from "@pages/Error";
 import Room from "@pages/Room";
 import Auth from "@pages/Auth";
-import GameCompo from "@pages/Game";
 
 const router = () => {
   const routes = useRoutes([
@@ -15,9 +14,7 @@ const router = () => {
     },
     {
       path: "/",
-      element: (
-        <Home />
-      ),
+      element: <Home />,
       errorElement: <ErrorPage />,
     },
     {
@@ -31,9 +28,7 @@ const router = () => {
     },
     {
       path: "/room",
-      element: (
-        <Room />
-      ),
+      element: <Room />
     }
   ]);
   return routes;

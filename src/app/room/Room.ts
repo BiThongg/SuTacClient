@@ -1,22 +1,10 @@
 import User from '../user/User';
 import Game from '../game/Game';
+import Participant, { Status } from './Participant';
 
-enum Status {
-    WAITING = "WAITING",
-    READY = "READY",
-}
 
-class Participant {
-    info: User;
-    status: Status;
 
-    constructor(user: User) {
-        this.info = user;
-        this.status = Status.WAITING;
-    }
-}
-
-class Room {
+export default class RoomClass {
     id: string;
     name: string;
     competitor: Participant | null = null;
@@ -99,4 +87,3 @@ class Room {
     }
 }
 
-export default { Room, Participant };

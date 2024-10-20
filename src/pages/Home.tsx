@@ -28,11 +28,13 @@ function Home() {
   }, [window.localStorage.getItem("user")]);
 
   socketService.listen("room_created", (data: { room: Room }) => onListenRoomCreateEvent(data))
-
-
+  socketService.listen("joined_room", (data: { room: Room }) => {
+    window.room = data.room;
+    navigate("/room");
+  })
 
   const handleJoinRoom = () => {
-    alert("This feature is not available yet")
+    socketService.emit("join_room", { room_id: roomIdRef.current?.value, user_id: user?.id })
   }
 
   const onCreateRoom = () => {
@@ -43,8 +45,6 @@ function Home() {
     window.room = data.room
     navigate("/room")
   }
-
-
   // how to add a new func for listening event from server 
 
   const handleClick = (typeGame: string) => {
