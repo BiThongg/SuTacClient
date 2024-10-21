@@ -22,14 +22,21 @@ export default function Room() {
   const [room, setRoom] = useState<RoomClass>(window?.room || {})
   const navigate = useNavigate();
   const { isLoading } = useSocketConnect()
-  const preventPointer = player.id !== room.owner.info.id ? 'pointer-events-none' : '';
+  const preventPointer = player.id !== room?.owner?.info.id ? 'pointer-events-none' : '';
+
+  useEffect(() => {
+    if (!window.room?.id) {
+      socketService.emit('get_room', { "user_id": player.id });
+    }
+  }, [])
 
   socketService.listen('started_game',
     (data: { message: string, game: Game }) => {
-      // console.log(data.message);
-      console.log(data.game);
-      window.game = data.game;
-      navigate('/game');
+
+      if (data.game.players[0].user.id === player.id || data.game.players[1].user.id === player.id) {
+        window.game = data.game;
+        navigate('/game');
+      }
     });
 
   socketService.listen('room_info', (data: { room: RoomClass }) => {
@@ -58,23 +65,20 @@ export default function Room() {
     setRoom(data.room);
   });
   socketService.listen("game_type_changed", (data: { game_type: string, room_id: string }) => {
-    console.log(data)
 
     if (room.id == data.room_id) {
       setGameType(data.game_type);
     }
   });
 
-  useEffect(() => {
-    socketService.emit('get_room', { "user_id": player.id });
-  }, [])
 
   const onStartGame = () => {
+    if (room.owner.info.id !== player.id) return;
     socketService.emit('start_game', { "room_id": room.id, "game_type": pickGameType, "user_id": player.id });
   }
 
   const handlePickGameType = (gameType: GameType) => {
-    // console.log(gameType)
+    if (room.owner.info.id !== player.id) return;
     socketService.emit('change_game_type', { "room_id": room.id, "game_type": gameType });
   }
 
@@ -122,26 +126,25 @@ export default function Room() {
 
         <article className="flex flex-col gap-3 w-[90%]">
           <div className="w-full bg-yellow-500 rounded-2xl pb-2">
-            <Btn classCSS="bg-yellow-400 rounded-2xl w-full py-2" onClick={() => onStartGame()}>
+            <Btn classCSS={`bg-yellow-400 rounded-2xl w-full py-2 ${preventPointer}`} onClick={() => onStartGame()}>
               START GAME
             </Btn>
           </div>
 
           <div className="w-[20%] rounded-2xl pb-2 cursor-auto flex flex-row gap-2 w-full">
             <Btn classCSS="bg-blue-400 rounded-full w-full py-2" onClick={() => {
-              // console.log(room)
-              // console.log(player)
+              console.log(room)
             }}>
               <div className='text-[15px] flex justify-center'>
                 <p>User Name:</p>
-                <span className='text-white'>{room.owner.info.name}</span>
+                <span className='text-white'>{room?.owner?.info.name}</span>
               </div>
             </Btn>
 
             {room?.competitor ? (
-              <div className="bg-blue-400 rounded-full w-full py-2 flex justify-center text-black-400 text-[15px] p-3" onClick={() => onKick(room?.competitor.info.id)}>
+              <div className="bg-blue-400 rounded-full w-full py-2 flex justify-center text-black-400 text-[15px] p-3" onClick={() => onKick(room?.competitor?.info?.id)}>
                 <p>User Name:</p>
-                <span className='text-white'>{room.competitor.info.name}</span>
+                <span className='text-white'>{room?.competitor?.info?.name}</span>
                 {
                   room.owner.info.id === player.id &&
                   <button className='bg-red-400 rounded-full w-10 px-3 flex items-center relative group'>

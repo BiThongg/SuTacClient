@@ -2,10 +2,8 @@ import Header from "@components/game/Header";
 import TicTacToeBoard from "@components/game/TictactoeBoard";
 import SumokuBoard from "@components/game/SumokuBoard";
 import Loading from "@components/loading/Loading";
-import { GameHook } from "@interfaces/GameHook";
 import useSocketConnect from "@hooks/useSocketConnect";
 import useBotMode from "@hooks/useBotMode";
-import { useEffect, useState } from "react";
 import usePvPMode from "@hooks/usePvPMode";
 
 export default function Game() {

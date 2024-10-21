@@ -19,7 +19,7 @@ export default function SumokuBoard({
             {row.map((col, j) => (
               <td
                 key={j}
-                className="border bg-black-500 h-20 rounded-md cursor-pointer"
+                className="border bg-black-500 h-10 rounded-md cursor-pointer"
                 onClick={() => {
                   onMove({ x: j, y: i });
                 }}>
