@@ -2,15 +2,19 @@ import { Game } from "@interfaces/Game";
 import { Player } from "@app/player/Player";
 import { Cell } from "@app/Utils";
 import { PersonMoveRequest } from "@interfaces/PersonMoveRequest";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { GameHook } from "@interfaces/GameHook";
 import socketService from "@app/socket/Socket";
 import User from "@app/user/User";
+import { ModalContext } from "@context/ContextModal";
+import { useNavigate } from "react-router-dom";
 
 
 export default function usePvPMode(): GameHook {
+  const navigate = useNavigate();
   const [game, setGame] = useState<Game>(window?.game || {});
   const [user, __] = useState<User>(localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user') || '{}') : {});
+  const modal = useContext(ModalContext);
 
   const player: Player = game.players.filter(player =>
     player?.user?.id === user.id
@@ -18,6 +22,26 @@ export default function usePvPMode(): GameHook {
 
   socketService.listen('moved', (data: { game: Game }) => {
     setGame(data.game)
+  });
+
+  socketService.listen('ended_game', (data: any) => {
+    console.log(data);
+    setTimeout(() => {
+      modal?.setModal({
+        showModal: true,
+        title: "Notification",
+        message: {
+          text: data.message,
+          img: "",
+          color: "",
+        },
+        btnYellow: "OK",
+        btnGray: "",
+        isNextRound: false,
+      });
+      window.game = {};
+      navigate('/room');
+    }, 1000)
   });
 
   const onMove = (point: { x: number, y: number }) => {

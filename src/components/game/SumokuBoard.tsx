@@ -1,4 +1,3 @@
-import Btn from "@components/shared/Btn";
 import IconX from "@assets/icon-x.svg";
 import IconO from "@assets/icon-o.svg";
 import { Cell } from "@app/Utils";

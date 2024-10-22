@@ -5,12 +5,12 @@ import Logo from '@components/shared/Logo';
 import User from '@app/user/User';
 import Game from '@app/game/Game';
 import Loading from '@components/loading/Loading';
-import Spin from "@assets/spin.svg"
 import RoomClass from '@app/room/Room';
 
 import socketService from '@app/socket/Socket';
 import useSocketConnect from '@hooks/useSocketConnect';
 import { ModalContext } from '@context/ContextModal';
+import RingSpin from "@assets/ring-resize.svg";
 
 enum GameType {
   SUMOKU = "CASUAL",
@@ -71,9 +71,20 @@ export default function Room() {
   });
 
   socketService.listen('added_bot', (data: { room: RoomClass }) => onListenAddBotEvent(data));
-  // socketService.listen('add_bot_failed', (data: { message: string }) => console.log(data.message));
+
   socketService.listen('start_game_failed', (data: { message: string }) => {
-    console.log(data.message);
+    modal?.setModal({
+      showModal: true,
+      title: "Notification",
+      message: {
+        text: data.message,
+        img: "",
+        color: "",
+      },
+      btnYellow: "OK",
+      btnGray: "",
+      isNextRound: false,
+    });
   });
   socketService.listen("joined_room", (data: { room: RoomClass }) => {
     setRoom(data.room);
@@ -139,11 +150,14 @@ export default function Room() {
         </article>
 
         <article className="flex flex-col gap-3 w-[90%]">
-          <div className="w-full bg-yellow-500 rounded-2xl pb-2">
-            <Btn classCSS={`bg-yellow-400 rounded-2xl w-full py-2 ${preventPointer}`} onClick={() => onStartGame()}>
-              START GAME
-            </Btn>
-          </div>
+          {
+            room.owner.info.id === player.id &&
+            <div className="w-full bg-yellow-500 rounded-2xl pb-2">
+              <Btn classCSS={`bg-yellow-400 rounded-2xl w-full py-2 ${preventPointer}`} onClick={() => onStartGame()}>
+                START GAME
+              </Btn>
+            </div>
+          }
 
           <div className="w-[20%] rounded-2xl pb-2 cursor-auto flex flex-row gap-2 w-full">
             <Btn classCSS="bg-blue-400 rounded-full w-full py-2" onClick={() => {
@@ -156,12 +170,15 @@ export default function Room() {
             </Btn>
 
             {room?.competitor ? (
-              <div className="bg-blue-400 rounded-full w-full py-2 flex justify-center text-black-400 text-[15px] p-3" onClick={() => onKick(room?.competitor?.info?.id)}>
-                <p>User Name:</p>
-                <span className='text-white'>{room?.competitor?.info?.name}</span>
+              <div className="bg-blue-400 rounded-full w-full flex justify-center gap-10 text-black-400 text-[15px] p-3 py-4" >
+
+                <div className='text-white'>
+                  <p className='text-black-400'>USER NAME:</p>
+                  {room?.competitor?.info?.name}
+                </div>
                 {
                   room.owner.info.id === player.id &&
-                  <button className='bg-red-400 rounded-full w-10 px-3 flex items-center relative group'>
+                  <button className='bg-red-400 rounded-full w-10 px-3 flex items-center relative group' onClick={() => onKick(room?.competitor?.info?.id)}>
                     <p>X</p>
                     <div className="absolute w-full h-full bg-red-500 hidden group-hover:block bottom-11 left-6 text-white rounded-full pt-3">
                       <p className="">Kick</p>
@@ -172,10 +189,10 @@ export default function Room() {
               </div>
             ) :
               (
-                <div className='bg-blue-400 rounded-full w-full py-2 flex justify-around text-black-400 text-[15px] p-3'>
-                  <div className='flex justify-center items-center gap-1 text-[15px]'>
+                <div className='bg-blue-400 rounded-full w-full py-2 flex justify-around text-black-400 text-[15px] p-3 gap-3'>
+                  <div className='flex justify-center items-center gap-3 text-[15px]'>
                     <p className=''>Waiting</p>
-                    <img src={Spin} />
+                    <img src={RingSpin} className="text-white" />
                   </div>
                   <button className='bg-red-400 rounded-full w-15 px-3 py-3' onClick={() => onAddBot()}>
                     Add Bot

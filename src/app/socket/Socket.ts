@@ -10,7 +10,7 @@ interface User {
 
 class SocketService {
   private socket: Socket | null = null;
-  private readonly url: string = `https://c66b-42-118-136-87.ngrok-free.app`; // Your socket server URL
+  private readonly url: string = "localhost:5000"; // Your socket server URL
 
   constructor() {
     this.socket = io(this.url, {

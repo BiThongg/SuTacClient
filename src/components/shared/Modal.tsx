@@ -60,16 +60,15 @@ export default function Modal({
                     )}
 
                     <div className="flex justify-center items-center gap-2 mt-3">
-                      <div
+                      {btnGray && <div
                         onClick={() => handleBtnGray(btnGray)}
-                        className={`${
-                          btnGray === "quit" ? `w-1/4 md:w-auto` : `w-auto`
-                        } bg-gray-500 rounded-2xl pb-2`}
+                        className={`${btnGray === "quit" ? `w-1/4 md:w-auto` : `w-auto`
+                          } bg-gray-500 rounded-2xl pb-2`}
                       >
                         <Btn classCSS="bg-gray-400 rounded-2xl w-full py-2 px-2">
                           {btnGray}
                         </Btn>
-                      </div>
+                      </div>}
 
                       <div
                         onClick={handleNewRound}

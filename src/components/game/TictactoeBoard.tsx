@@ -21,7 +21,6 @@ export default function TicTacToeBoard({
           // data-value={value}
           >
             <Btn
-              // onClick={() => !icon && handleTicTacToe(id)}
               // classCSS={`${isWinner === "X"
               //   ? "bg-blue-400"
               //   : isWinner === "O"
