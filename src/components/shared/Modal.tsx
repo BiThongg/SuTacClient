@@ -5,6 +5,7 @@ import type { Modal } from "@interfaces/Modal";
 import { ModalContext, state } from "@context/ContextModal";
 import { useNavigate } from "react-router-dom";
 
+
 export default function Modal({
   showModal,
   btnGray,

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import Btn from '@components/shared/Btn';
 import Logo from '@components/shared/Logo';
@@ -10,6 +10,7 @@ import RoomClass from '@app/room/Room';
 
 import socketService from '@app/socket/Socket';
 import useSocketConnect from '@hooks/useSocketConnect';
+import { ModalContext } from '@context/ContextModal';
 
 enum GameType {
   SUMOKU = "CASUAL",
@@ -23,6 +24,7 @@ export default function Room() {
   const navigate = useNavigate();
   const { isLoading } = useSocketConnect()
   const preventPointer = player.id !== room?.owner?.info.id ? 'pointer-events-none' : '';
+  const modal = useContext(ModalContext);
 
   useEffect(() => {
     if (!window.room?.id) {
@@ -47,7 +49,19 @@ export default function Room() {
     window.room = data.room
     if (room?.competitor?.info?.id === player.id && data.room.id == room.id) {
       window.room = {}
-      console.log("hehehehe")
+      modal?.setModal({
+        showModal: true,
+        title: "Notification",
+        message: {
+          text: "You have been kicked out of the room",
+          img: "",
+          color: "",
+        },
+        btnYellow: "Quit",
+        btnGray: "no, cancel",
+        isNextRound: false,
+      });
+
       navigate('/');
     }
 
@@ -59,7 +73,7 @@ export default function Room() {
   socketService.listen('added_bot', (data: { room: RoomClass }) => onListenAddBotEvent(data));
   // socketService.listen('add_bot_failed', (data: { message: string }) => console.log(data.message));
   socketService.listen('start_game_failed', (data: { message: string }) => {
-    // console.log(data.message);
+    console.log(data.message);
   });
   socketService.listen("joined_room", (data: { room: RoomClass }) => {
     setRoom(data.room);
