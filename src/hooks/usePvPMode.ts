@@ -22,10 +22,16 @@ export default function usePvPMode(): GameHook {
 
   socketService.listen('moved', (data: { game: Game }) => {
     setGame(data.game)
+
+    const isFull: boolean = data.game.board.every(row => row.every(cell => cell !== Cell.EMPTY))
+
+    if (isFull) {
+      const room_id = window?.room?.id
+      socketService.emit('end_game', { "room_id": room_id });
+    }
   });
 
   socketService.listen('ended_game', (data: any) => {
-    console.log(data);
     setTimeout(() => {
       modal?.setModal({
         showModal: true,

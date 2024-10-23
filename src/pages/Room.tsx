@@ -26,6 +26,8 @@ export default function Room() {
   const preventPointer = player.id !== room?.owner?.info.id ? 'pointer-events-none' : '';
   const modal = useContext(ModalContext);
 
+
+
   useEffect(() => {
     if (!window.room?.id) {
       socketService.emit('get_room', { "user_id": player.id });
@@ -34,11 +36,8 @@ export default function Room() {
 
   socketService.listen('started_game',
     (data: { message: string, game: Game }) => {
-
-      if (data.game.players[0].user.id === player.id || data.game.players[1].user.id === player.id) {
-        window.game = data.game;
-        navigate('/game');
-      }
+      window.game = data.game;
+      navigate('/game');
     });
 
   socketService.listen('room_info', (data: { room: RoomClass }) => {

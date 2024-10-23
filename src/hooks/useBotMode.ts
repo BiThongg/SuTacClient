@@ -3,18 +3,20 @@ import { Player } from "@app/player/Player";
 import { Cell } from "@app/Utils";
 import { BotMoveRequest } from "@interfaces/BotMoveRequest";
 import { PersonMoveRequest } from "@interfaces/PersonMoveRequest";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { GameHook } from "@interfaces/GameHook";
 import socketService from "@app/socket/Socket";
 import User from "@app/user/User";
+import { ModalContext } from "@context/ContextModal";
+import { useNavigate } from "react-router-dom";
 
 
 export default function useBotMode(): GameHook {
+  const navigate = useNavigate();
+  const modal = useContext(ModalContext);
   const [game, setGame] = useState<Game>(window?.game || {});
   const [user, __] = useState<User>(localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user') || '{}') : {});
   const [isWaitBot, setIsWaitBot] = useState<boolean>(false)
-
-
 
   const botSymbol: string = game.players.filter(e => {
     const name = e.user?.name
@@ -39,8 +41,28 @@ export default function useBotMode(): GameHook {
     return () => clearInterval(botTurnInterval)
   })
 
+  socketService.listen('ended_game', (data: any) => {
+    setTimeout(() => {
+      modal?.setModal({
+        showModal: true,
+        title: "Notification",
+        message: {
+          text: data.message,
+          img: "",
+          color: "",
+        },
+        btnYellow: "OK",
+        btnGray: "",
+        isNextRound: false,
+      });
+      window.game = {};
+      navigate('/room');
+    }, 1000)
+  });
+
+
+
   socketService.listen('moved', (data: { game: Game }) => {
-    console.log(data.game)
     setGame(data.game)
   });
 
@@ -48,7 +70,7 @@ export default function useBotMode(): GameHook {
     setIsWaitBot(false)
   });
 
-  socketService.listen('bot_move_failed', (data: { message: string }) => { console.log(data.message) });
+  // socketService.listen('bot_move_failed', (data: { message: string }) => { console.log(data.message) });
 
   const onMove = (point: { x: number, y: number }) => {
     const gameTurn: Cell = game?.turn;
