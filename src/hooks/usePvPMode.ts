@@ -47,7 +47,7 @@ export default function usePvPMode(): GameHook {
       });
       window.game = {};
       navigate('/room');
-    }, 1000)
+    }, 500)
   });
 
   const onMove = (point: { x: number, y: number }) => {

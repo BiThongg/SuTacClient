@@ -36,7 +36,7 @@ export default function useBotMode(): GameHook {
         const botMoveRequest: BotMoveRequest = { "room_id": window?.room?.id };
         socketService.emit('bot_move', botMoveRequest);
       }
-    }, 1000)
+    }, 500)
 
     return () => clearInterval(botTurnInterval)
   })

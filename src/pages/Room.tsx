@@ -18,9 +18,10 @@ enum GameType {
 }
 
 export default function Room() {
-  const [pickGameType, setGameType] = useState<string>(GameType.SUMOKU);
+
+  const [pickGameType, setGameType] = useState<string>(GameType.TIC_TAC_TOE);
   const [player, _] = useState<User>(JSON.parse(localStorage.getItem('user') || '{}'));
-  const [room, setRoom] = useState<RoomClass>(window?.room || {})
+  const [room, setRoom] = useState<RoomClass>(window?.room || {});
   const navigate = useNavigate();
   const { isLoading } = useSocketConnect()
   const preventPointer = player.id !== room?.owner?.info.id ? 'pointer-events-none' : '';
@@ -29,10 +30,16 @@ export default function Room() {
 
 
   useEffect(() => {
-    if (!window.room?.id) {
+    if (!player?.id) {
+      navigate('/');
+      return
+    }
+
+    if (!room) {
       socketService.emit('get_room', { "user_id": player.id });
     }
   }, [])
+
 
   socketService.listen('started_game',
     (data: { message: string, game: Game }) => {
@@ -41,6 +48,7 @@ export default function Room() {
     });
 
   socketService.listen('room_info', (data: { room: RoomClass }) => {
+    window.room = data.room;
     setRoom(data.room);
   })
 
@@ -90,24 +98,24 @@ export default function Room() {
   });
   socketService.listen("game_type_changed", (data: { game_type: string, room_id: string }) => {
 
-    if (room.id == data.room_id) {
+    if (room?.id == data.room_id) {
       setGameType(data.game_type);
     }
   });
 
 
   const onStartGame = () => {
-    if (room.owner.info.id !== player.id) return;
+    if (room?.owner.info.id !== player.id) return;
     socketService.emit('start_game', { "room_id": room.id, "game_type": pickGameType, "user_id": player.id });
   }
 
   const handlePickGameType = (gameType: GameType) => {
-    if (room.owner.info.id !== player.id) return;
-    socketService.emit('change_game_type', { "room_id": room.id, "game_type": gameType });
+    if (room?.owner.info.id !== player.id) return;
+    socketService.emit('change_game_type', { "room_id": room?.id, "game_type": gameType });
   }
 
   const onAddBot = () => {
-    socketService.emit('add_bot', { "room_id": room.id });
+    socketService.emit('add_bot', { "room_id": room.id, "user_id": player.id });
   }
 
   const onListenAddBotEvent = (data: { room: RoomClass }) => {
@@ -120,7 +128,7 @@ export default function Room() {
   }
 
   return (
-    isLoading ? <Loading /> :
+    (!isLoading && room?.id) ?
       <section className="h-[70vh] w-full sm:w-[60%] lg:w-[40%] flex flex-col items-center justify-center gap-10">
         <Logo width={10} height={10} />
 
@@ -201,6 +209,7 @@ export default function Room() {
           </div>
         </article>
       </section>
+      : <Loading />
   );
 }
 
