@@ -10,7 +10,7 @@ interface User {
 
 class SocketService {
   private socket: Socket | null = null;
-  private readonly url: string = "localhost:5000"; // Your socket server URL
+  private readonly url: string = "http://khoakomlem-internal.ddns.net:5000"; // Your socket server URL
 
   constructor() {
     this.socket = io(this.url, {
