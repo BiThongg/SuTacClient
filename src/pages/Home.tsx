@@ -1,16 +1,17 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
 import OOutline from "@components/icons/OOutline";
 import XOutline from "@components/icons/XOutline";
 import Btn from "@components/shared/Btn";
 import Logo from "@components/shared/Logo";
 import User from "@interfaces/User";
-// import { Room } from "@app/room/Room";
 import Loading from "@components/loading/Loading";
 import { useNavigate } from "react-router-dom";
 import socketService from "@app/socket/Socket";
 import useSocketConnect from "@hooks/useSocketConnect";
+import { ModalContext } from "@context/ContextModal";
 
 function Home() {
+  const modal = useContext(ModalContext);
   const navigate = useNavigate();
   const [pickPlayer, setPickPlayer] = useState<boolean>(true);
   const roomIdRef = useRef<HTMLInputElement>(null);
@@ -31,6 +32,21 @@ function Home() {
   socketService.listen("joined_room", (data: { room: Room }) => {
     window.room = data.room;
     navigate("/room");
+  })
+
+  socketService.listen("join_room_failed", (data: { message: string }) => {
+    modal?.setModal({
+      showModal: true,
+      title: "Notification",
+      message: {
+        text: data.message,
+        img: "",
+        color: "",
+      },
+      btnYellow: "Ok",
+      btnGray: "",
+      isNextRound: false,
+    });
   })
 
   const handleJoinRoom = () => {

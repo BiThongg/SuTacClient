@@ -28,6 +28,9 @@ export default function Room() {
   const modal = useContext(ModalContext);
 
 
+  useEffect(() => {
+    socketService.connect();
+  }, [])
 
   useEffect(() => {
     if (!player?.id) {
@@ -35,10 +38,10 @@ export default function Room() {
       return
     }
 
-    if (!room) {
+    if (!isLoading && !room?.id) {
       socketService.emit('get_room', { "user_id": player.id });
     }
-  }, [])
+  }, [isLoading])
 
 
   socketService.listen('started_game',
@@ -201,7 +204,7 @@ export default function Room() {
                     <p className=''>Waiting</p>
                     <img src={RingSpin} className="text-white" />
                   </div>
-                  <button className='bg-red-400 rounded-full w-15 px-3 py-3' onClick={() => onAddBot()}>
+                  <button className='bg-red-400 rounded-full w-15 px-3 py-3' onClick={onAddBot}>
                     Add Bot
                   </button>
                 </div>
