@@ -7,15 +7,15 @@ export default function useSocketConnect(): { isLoading: boolean } {
   useEffect(() => {
     const interval = setInterval(() => {
       onHandleLoading();
-    }, 2000);
+    }, 500);
     return () => clearInterval(interval);
   }, [])
 
   const onHandleLoading = () => {
+    console.log('onHandleLoading')
     const status: boolean = socketService.status();
 
     if (status) {
-      console.log('Connected to the server');
       setIsLoading(false);
       return;
     }

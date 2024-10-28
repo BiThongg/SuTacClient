@@ -21,30 +21,35 @@ export default function Room() {
 
   const [pickGameType, setGameType] = useState<string>(GameType.TIC_TAC_TOE);
   const [player, _] = useState<User>(JSON.parse(localStorage.getItem('user') || '{}'));
-  const [room, setRoom] = useState<RoomClass>(window?.room || {});
+  const [room, setRoom] = useState<RoomClass>();
   const navigate = useNavigate();
   const { isLoading } = useSocketConnect()
   const preventPointer = player.id !== room?.owner?.info.id ? 'pointer-events-none' : '';
   const modal = useContext(ModalContext);
 
 
+  // useEffect(() => {
+  //   socketService.connect();
+  // }, [])
+  //
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     console.log(isLoading)
+  //     if (!isLoading) {
+  //       socketService.emit('get_room', { "user_id": player.id });
+  //       clearInterval(interval);
+  //     }
+  //   }, 500);
+  //   return () => clearInterval(interval);
+  // }, [])
+
   useEffect(() => {
     if (isLoading) {
       socketService.connect();
-    } else {
-      socketService.emit('get_room', { "user_id": player.id });
+      return;
     }
-  }, [isLoading])
 
-
-  useEffect(() => {
-    socketService.listen('started_game',
-      (data: { message: string, game: Game }) => {
-        window.game = data.game;
-        navigate('/game');
-      });
-
-    socketService.listen('room_info', (data: { room: RoomClass }) => {
+    const handleFetchRoom = (data: { room: RoomClass }) => {
       if (!data?.room?.id) {
         navigate('/');
         return;
@@ -52,9 +57,30 @@ export default function Room() {
 
       window.room = data.room;
       setRoom(data.room);
-    })
+    }
 
-    socketService.listen('kicked', (data: { room: RoomClass }) => {
+    socketService.listen('room_info', (data: { room: RoomClass }) => handleFetchRoom(data));
+
+    const interval = setInterval(() => {
+      if (!player || !player?.id) {
+        navigate('/');
+        return;
+      }
+
+      if (room?.id) {
+        console.log(room)
+        clearInterval(interval);
+      }
+      socketService.emit('get_room', { "user_id": player.id });
+    }, 500);
+
+    return () => clearInterval(interval);
+
+  }, [isLoading])
+
+
+  useEffect(() => {
+    const handleKick = (data: { room: RoomClass }) => {
       window.room = data.room
       if (room?.competitor?.info?.id === player.id && data.room.id == room.id) {
         window.room = {}
@@ -77,11 +103,15 @@ export default function Room() {
       if (data.room.owner.info.id === player.id) {
         setRoom(data.room);
       }
-    });
+    }
 
-    socketService.listen('added_bot', (data: { room: RoomClass }) => onListenAddBotEvent(data));
+    const handleStartGame = (data: { message: string, game: Game }) => {
+      window.game = data.game;
+      navigate('/game');
+    }
 
-    socketService.listen('start_game_failed', (data: { message: string }) => {
+
+    const handleStartGameFailed = (data: { message: string }) => {
       modal?.setModal({
         showModal: true,
         title: "Notification",
@@ -94,16 +124,38 @@ export default function Room() {
         btnGray: "",
         isNextRound: false,
       });
-    });
-    socketService.listen("joined_room", (data: { room: RoomClass }) => {
-      setRoom(data.room);
-    });
-    socketService.listen("game_type_changed", (data: { game_type: string, room_id: string }) => {
+    }
 
-      if (room?.id == data.room_id) {
-        setGameType(data.game_type);
-      }
-    });
+    const handleJoinRoom = (data: { room: RoomClass }) => {
+      setRoom(data.room)
+    }
+
+    const handleChangeGameType = (data: { game_type: string, room_id: string }) => {
+      setGameType(data.game_type);
+    }
+
+    const onListenAddBotEvent = (data: { room: RoomClass }) => {
+      window.room = data.room;
+      setRoom(data.room);
+    }
+
+
+    socketService.listen("game_type_changed", (data: { game_type: string, room_id: string }) => handleChangeGameType(data));
+    socketService.listen('started_game', (data: { message: string, game: Game }) => handleStartGame(data));
+    socketService.listen('kicked', (data: { room: RoomClass }) => handleKick(data));
+    socketService.listen('added_bot', (data: { room: RoomClass }) => onListenAddBotEvent(data));
+    socketService.listen('start_game_failed', (data: { message: string }) => handleStartGameFailed(data));
+    socketService.listen("joined_room", (data: { room: RoomClass }) => handleJoinRoom(data));
+
+    return () => {
+      socketService.removeListener('game_type_changed', handleChangeGameType);
+      socketService.removeListener('started_game', handleStartGame);
+      // socketService.removeListener('room_info', handleFetchRoom);
+      socketService.removeListener('kicked', handleKick);
+      socketService.removeListener('added_bot', onListenAddBotEvent);
+      socketService.removeListener('start_game_failed', handleStartGameFailed);
+      socketService.removeListener("joined_room", handleJoinRoom);
+    };
 
   }, [])
 
@@ -122,10 +174,6 @@ export default function Room() {
     socketService.emit('add_bot', { "room_id": room.id, "user_id": player.id });
   }
 
-  const onListenAddBotEvent = (data: { room: RoomClass }) => {
-    window.room = data.room;
-    setRoom(data.room);
-  }
 
   const onKick = (kick_id: string) => {
     console.log(kick_id)

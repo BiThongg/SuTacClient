@@ -37,7 +37,12 @@ class SocketService {
     this.socket.on(eventName, callback);
   }
 
-  // Emit events
+
+  removeListener(eventName: string, listener: (...args: any[]) => void): void {
+    if (!this.socket) return;
+    this.socket.removeListener(eventName, listener);
+  }
+
   emit(eventName: string, data: any): void {
     if (!this.socket) return;
     this.socket.emit(eventName, data);
@@ -54,6 +59,7 @@ class SocketService {
   status(): boolean {
     return this.socket?.connected || false;
   }
+
 }
 
 const socketService = new SocketService();
