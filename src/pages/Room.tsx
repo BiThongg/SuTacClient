@@ -139,30 +139,12 @@ export default function Room() {
       setRoom(data.room);
     }
 
-
-    socketService.listen("game_type_changed", (data: { game_type: string, room_id: string }) => handleChangeGameType(data));
-    socketService.listen('started_game', (data: { message: string, game: Game }) => handleStartGame(data));
-    socketService.listen('kicked', (data: { room: RoomClass }) => handleKick(data));
-    socketService.listen('added_bot', (data: { room: RoomClass }) => onListenAddBotEvent(data));
-    socketService.listen('start_game_failed', (data: { message: string }) => handleStartGameFailed(data));
-    socketService.listen("joined_room", (data: { room: RoomClass }) => handleJoinRoom(data));
-
-    return () => {
-      socketService.removeListener('game_type_changed', handleChangeGameType);
-      socketService.removeListener('started_game', handleStartGame);
-      // socketService.removeListener('room_info', handleFetchRoom);
-      socketService.removeListener('kicked', handleKick);
-      socketService.removeListener('added_bot', onListenAddBotEvent);
-      socketService.removeListener('start_game_failed', handleStartGameFailed);
-      socketService.removeListener("joined_room", handleJoinRoom);
-    };
-
-    socketService.listen("room_destroyed", (data: { message: string }) => {
+    const onRoomDestroyed = (data: { message: string }) => {
       modal?.setModal({
         showModal: true,
         title: "Notification",
         message: {
-          text: data.message,
+          text: "Room Expired",
           img: "",
           color: "",
         },
@@ -171,8 +153,25 @@ export default function Room() {
         isNextRound: false,
       });
       navigate('/');
-    })
+    }
 
+
+    socketService.listen("game_type_changed", (data: { game_type: string, room_id: string }) => handleChangeGameType(data));
+    socketService.listen('started_game', (data: { message: string, game: Game }) => handleStartGame(data));
+    socketService.listen('kicked', (data: { room: RoomClass }) => handleKick(data));
+    socketService.listen('added_bot', (data: { room: RoomClass }) => onListenAddBotEvent(data));
+    socketService.listen('start_game_failed', (data: { message: string }) => handleStartGameFailed(data));
+    socketService.listen("joined_room", (data: { room: RoomClass }) => handleJoinRoom(data));
+    socketService.listen("room_destroyed", (data: { message: string }) => onRoomDestroyed(data));
+
+    return () => {
+      socketService.removeListener('game_type_changed', handleChangeGameType);
+      socketService.removeListener('started_game', handleStartGame);
+      socketService.removeListener('kicked', handleKick);
+      socketService.removeListener('added_bot', onListenAddBotEvent);
+      socketService.removeListener('start_game_failed', handleStartGameFailed);
+      socketService.removeListener("joined_room", handleJoinRoom);
+    };
 
   }, [])
 
