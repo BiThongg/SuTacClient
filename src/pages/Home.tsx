@@ -37,7 +37,6 @@ function Home() {
   useEffect(() => {
     socketService.listen("room_created", (data: { room: Room }) => onListenRoomCreateEvent(data))
     socketService.listen("joined_room", (data: { room: Room }) => {
-      window.room = data.room;
       navigate("/room");
     })
 
@@ -83,7 +82,6 @@ function Home() {
   }
 
   const onListenRoomCreateEvent = (data: { room: Room }) => {
-    window.room = data.room
     navigate("/room")
   }
   // how to add a new func for listening event from server 

@@ -61,7 +61,6 @@ export default function useBotMode(): GameHook {
   });
 
 
-
   socketService.listen('moved', (data: { game: Game }) => {
     setGame(data.game)
   });

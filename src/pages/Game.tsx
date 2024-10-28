@@ -23,7 +23,6 @@ export default function Game() {
       <>
         <div className="h-14"> <ChessTimer game={game} initialTime={30} /> </div>
         <section className="h-screen md:h-[70vh] w-full sm:w-[60%] lg:w-[40%] flex flex-col justify-center items-center">
-          <Header isTurnX={game?.turn} />
           {sizeBoard === 3 ? (<TicTacToeBoard board={game?.board} onMove={onMove} />)
             : (<SumokuBoard board={game?.board} onMove={onMove} />)}
         </section>
