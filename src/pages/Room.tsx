@@ -45,7 +45,6 @@ export default function Room() {
       });
 
     socketService.listen('room_info', (data: { room: RoomClass }) => {
-      console.log(data)
       if (!data?.room?.id) {
         navigate('/');
         return;
