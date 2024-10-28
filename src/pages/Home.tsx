@@ -58,6 +58,21 @@ function Home() {
   }, [])
 
 
+  socketService.listen("join_room_failed", (data: { message: string }) => {
+    modal?.setModal({
+      showModal: true,
+      title: "Notification",
+      message: {
+        text: data.message,
+        img: "",
+        color: "",
+      },
+      btnYellow: "Ok",
+      btnGray: "",
+      isNextRound: false,
+    });
+  })
+
   const handleJoinRoom = () => {
     socketService.emit("join_room", { room_id: roomIdRef.current?.value, user_id: user?.id })
   }
