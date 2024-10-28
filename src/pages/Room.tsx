@@ -105,6 +105,23 @@ export default function Room() {
       }
     });
 
+    socketService.listen("room_destroyed", (data: { message: string }) => {
+      modal?.setModal({
+        showModal: true,
+        title: "Notification",
+        message: {
+          text: data.message,
+          img: "",
+          color: "",
+        },
+        btnYellow: "Quit",
+        btnGray: "no, cancel",
+        isNextRound: false,
+      });
+      navigate('/');
+    })
+
+
   }, [])
 
 
