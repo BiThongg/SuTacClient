@@ -29,82 +29,84 @@ export default function Room() {
 
 
   useEffect(() => {
-    socketService.connect();
-  }, [])
-
-  useEffect(() => {
-    if (!player?.id) {
-      navigate('/');
-      return
-    }
-
-    if (!isLoading && !room?.id) {
+    if (isLoading) {
+      socketService.connect();
+    } else {
       socketService.emit('get_room', { "user_id": player.id });
     }
   }, [isLoading])
 
 
-  socketService.listen('started_game',
-    (data: { message: string, game: Game }) => {
-      window.game = data.game;
-      navigate('/game');
+  useEffect(() => {
+    socketService.listen('started_game',
+      (data: { message: string, game: Game }) => {
+        window.game = data.game;
+        navigate('/game');
+      });
+
+    socketService.listen('room_info', (data: { room: RoomClass }) => {
+      console.log(data)
+      if (!data?.room?.id) {
+        navigate('/');
+        return;
+      }
+
+      window.room = data.room;
+      setRoom(data.room);
+    })
+
+    socketService.listen('kicked', (data: { room: RoomClass }) => {
+      window.room = data.room
+      if (room?.competitor?.info?.id === player.id && data.room.id == room.id) {
+        window.room = {}
+        modal?.setModal({
+          showModal: true,
+          title: "Notification",
+          message: {
+            text: "You have been kicked out of the room",
+            img: "",
+            color: "",
+          },
+          btnYellow: "Quit",
+          btnGray: "no, cancel",
+          isNextRound: false,
+        });
+
+        navigate('/');
+      }
+
+      if (data.room.owner.info.id === player.id) {
+        setRoom(data.room);
+      }
     });
 
-  socketService.listen('room_info', (data: { room: RoomClass }) => {
-    window.room = data.room;
-    setRoom(data.room);
-  })
+    socketService.listen('added_bot', (data: { room: RoomClass }) => onListenAddBotEvent(data));
 
-  socketService.listen('kicked', (data: { room: RoomClass }) => {
-    window.room = data.room
-    if (room?.competitor?.info?.id === player.id && data.room.id == room.id) {
-      window.room = {}
+    socketService.listen('start_game_failed', (data: { message: string }) => {
       modal?.setModal({
         showModal: true,
         title: "Notification",
         message: {
-          text: "You have been kicked out of the room",
+          text: data.message,
           img: "",
           color: "",
         },
-        btnYellow: "Quit",
-        btnGray: "no, cancel",
+        btnYellow: "OK",
+        btnGray: "",
         isNextRound: false,
       });
-
-      navigate('/');
-    }
-
-    if (data.room.owner.info.id === player.id) {
-      setRoom(data.room);
-    }
-  });
-
-  socketService.listen('added_bot', (data: { room: RoomClass }) => onListenAddBotEvent(data));
-
-  socketService.listen('start_game_failed', (data: { message: string }) => {
-    modal?.setModal({
-      showModal: true,
-      title: "Notification",
-      message: {
-        text: data.message,
-        img: "",
-        color: "",
-      },
-      btnYellow: "OK",
-      btnGray: "",
-      isNextRound: false,
     });
-  });
-  socketService.listen("joined_room", (data: { room: RoomClass }) => {
-    setRoom(data.room);
-  });
-  socketService.listen("game_type_changed", (data: { game_type: string, room_id: string }) => {
+    socketService.listen("joined_room", (data: { room: RoomClass }) => {
+      setRoom(data.room);
+    });
+    socketService.listen("game_type_changed", (data: { game_type: string, room_id: string }) => {
 
-    if (room?.id == data.room_id) {
-      setGameType(data.game_type);
-    }
-  });
+      if (room?.id == data.room_id) {
+        setGameType(data.game_type);
+      }
+    });
+
+  }, [])
 
 
   const onStartGame = () => {
@@ -127,6 +129,7 @@ export default function Room() {
   }
 
   const onKick = (kick_id: string) => {
+    console.log(kick_id)
     socketService.emit('kick', { "room_id": room.id, "kick_id": kick_id, "owner_id": player.id });
   }
 

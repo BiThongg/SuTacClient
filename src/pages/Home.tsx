@@ -19,6 +19,12 @@ function Home() {
   const [user, setUser] = useState<User | undefined>();
 
   useEffect(() => {
+    if (isLoading) {
+      socketService.connect();
+    }
+  }, [isLoading])
+
+  useEffect(() => {
     if (!window.localStorage.getItem("user")) {
       navigate("/auth");
     } else {
@@ -27,32 +33,37 @@ function Home() {
 
   }, [window.localStorage.getItem("user")]);
 
-  socketService.listen("room_created", (data: { room: Room }) => onListenRoomCreateEvent(data))
-  socketService.listen("joined_room", (data: { room: Room }) => {
-    window.room = data.room;
-    navigate("/room");
-  })
 
-  socketService.listen("join_room_failed", (data: { message: string }) => {
-    modal?.setModal({
-      showModal: true,
-      title: "Notification",
-      message: {
-        text: data.message,
-        img: "",
-        color: "",
-      },
-      btnYellow: "Quit",
-      btnGray: "no, cancel",
-      isNextRound: false,
-    });
-  })
+  useEffect(() => {
+    socketService.listen("room_created", (data: { room: Room }) => onListenRoomCreateEvent(data))
+    socketService.listen("joined_room", (data: { room: Room }) => {
+      window.room = data.room;
+      navigate("/room");
+    })
+
+    socketService.listen("join_room_failed", (data: { message: string }) => {
+      modal?.setModal({
+        showModal: true,
+        title: "Notification",
+        message: {
+          text: data.message,
+          img: "",
+          color: "",
+        },
+        btnYellow: "Quit",
+        btnGray: "no, cancel",
+        isNextRound: false,
+      });
+    })
+  }, [])
+
 
   const handleJoinRoom = () => {
     socketService.emit("join_room", { room_id: roomIdRef.current?.value, user_id: user?.id })
   }
 
   const onCreateRoom = () => {
+    console.log({ room_name: "", user_id: user?.id })
     socketService.emit("create_room", { room_name: "", user_id: user?.id })
   }
 
@@ -61,22 +72,6 @@ function Home() {
     navigate("/room")
   }
   // how to add a new func for listening event from server 
-
-  const handleClick = (typeGame: string) => {
-    const localTypeGame = localStorage.getItem("typeGame") || "";
-    const localPickPlayer = localStorage.getItem("pickPlayer") || "";
-
-    const pickPlayerString = pickPlayer ? "X" : "O";
-
-    if (localPickPlayer !== pickPlayerString || localTypeGame !== typeGame) {
-      localStorage.removeItem("score");
-    }
-
-    localStorage.setItem("pickPlayer", pickPlayerString);
-    localStorage.setItem("typeGame", typeGame);
-
-    navigate("/game", { replace: true });
-  };
 
   const handlePickPlayer = () => setPickPlayer(!pickPlayer);
 

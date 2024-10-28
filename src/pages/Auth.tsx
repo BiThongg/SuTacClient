@@ -13,10 +13,21 @@ function Auth() {
   const userNameRef = useRef<any>();
 
   useEffect(() => {
+    socketService.connect();
+  }, [])
+
+
+  useEffect(() => {
     if (window.localStorage.getItem("user")) {
-      navigate("/")
+      navigate("/");
     }
   }, []);
+
+  useEffect(() => {
+    socketService.listen("register", (data: { user: User }) => {
+      saveUser(data);
+    })
+  }, [])
 
 
   const saveUser = (data: { user: User }) => {
@@ -35,9 +46,6 @@ function Auth() {
     socketService.emit("register", { name: name })
   }
 
-  socketService.listen("register", (data: { user: User }) => {
-    saveUser(data)
-  })
 
   return (isLoading ? <Loading /> :
     <div className="flex flex-col content-center gap-2">

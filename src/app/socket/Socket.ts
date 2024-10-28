@@ -1,7 +1,5 @@
 import { io, Socket } from 'socket.io-client';
 
-
-
 interface User {
   id: string;
   sid: string;
@@ -10,15 +8,15 @@ interface User {
 
 class SocketService {
   private socket: Socket | null = null;
-  private readonly url: string = "http://khoakomlem-internal.ddns.net:5000"; // Your socket server URL
+  private readonly url: string = "http://khoakomlem-internal.ddns.net:5000/";
 
   constructor() {
     this.socket = io(this.url, {
       transports: ['websocket'], // Ensure websocket is used
+      autoConnect: false,
     });
   }
 
-  // Connect to the socket
   connect(): void {
     if (!this.socket) return;
 
@@ -33,7 +31,6 @@ class SocketService {
     })
   }
 
-  // Listen to events
   listen(eventName: string, callback: (data: any) => void): void {
     if (!this.socket) return;
 
