@@ -125,6 +125,7 @@ export default function Room() {
     }
 
     const handleJoinRoom = (data: { room: RoomClass }) => {
+      window.room = data.room;
       setRoom(data.room)
     }
 
