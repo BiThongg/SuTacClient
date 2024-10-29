@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import socketService from "@app/socket/Socket";
 import useSocketConnect from "@hooks/useSocketConnect";
 import { ModalContext } from "@context/ContextModal";
+import { Room } from "@interfaces/Room";
 
 function Home() {
   const modal = useContext(ModalContext);
@@ -17,6 +18,11 @@ function Home() {
   const roomIdRef = useRef<HTMLInputElement>(null);
   const { isLoading } = useSocketConnect();
   const [user, setUser] = useState<User | undefined>();
+
+  useEffect(() => {
+    socketService.emit("delete_exist_room_of_user", {});
+    console.log('delete_exist_room_of_user')
+  }, [user, isLoading])
 
   useEffect(() => {
     if (isLoading) {

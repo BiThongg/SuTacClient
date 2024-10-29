@@ -51,7 +51,6 @@ const ChessTimer: React.FC<IChessTimerProps> = ({ game, initialTime }) => {
     return () => clearInterval(timer);
   }, [isRunning, timeLeft]);
 
-  // util functon
   const resetTimer = () => {
     setTimeLeft(initialTime);
     setIsRunning(true);
@@ -66,7 +65,7 @@ const ChessTimer: React.FC<IChessTimerProps> = ({ game, initialTime }) => {
   return (
     <div className="flex flex-col items-center p-6 bg-gray-800 text-white rounded-lg lg:-translate-y-16">
       <Logo width={7} height={7} />
-      <div className="text-4xl font-bold mb-4 mt-2">
+      <div className={"text-4xl font-bold mb-4 mt-2"}>
         {game.turn.valueOf() === mySelf?.symbol.valueOf() ? formatTime(timeLeft) : <span className='flex flex-row gap-3'><p>Waiting </p> < RingSpin /> </span>}
       </div>
 
@@ -82,7 +81,6 @@ const ChessTimer: React.FC<IChessTimerProps> = ({ game, initialTime }) => {
         </div>}
 
         <div
-          // onClick={resetTimer} 
           className="px-3 py-2 bg-black-300 text-white rounded-md flex"
         >
           <span className='flex flex-row gap-2'><p>Your Symbol: </p> {

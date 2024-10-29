@@ -11,6 +11,7 @@ import socketService from '@app/socket/Socket';
 import useSocketConnect from '@hooks/useSocketConnect';
 import { ModalContext } from '@context/ContextModal';
 import RingSpin from "@assets/ring-resize.svg";
+import RoomTimer from './RoomTimer';
 
 enum GameType {
   SUMOKU = "CASUAL",
@@ -25,23 +26,7 @@ export default function Room() {
   const navigate = useNavigate();
   const { isLoading } = useSocketConnect()
   const preventPointer = player.id !== room?.owner?.info.id ? 'pointer-events-none' : '';
-  const modal = useContext(ModalContext);
-
-
-  // useEffect(() => {
-  //   socketService.connect();
-  // }, [])
-  //
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     console.log(isLoading)
-  //     if (!isLoading) {
-  //       socketService.emit('get_room', { "user_id": player.id });
-  //       clearInterval(interval);
-  //     }
-  //   }, 500);
-  //   return () => clearInterval(interval);
-  // }, [])
+  const modal = useContext(ModalContext); 
 
   useEffect(() => {
     if (isLoading) {
@@ -128,6 +113,11 @@ export default function Room() {
       window.room = data.room;
       setRoom(data.room)
     }
+    const handleLeaveRoom = (data: { room: RoomClass }) => {
+      window.room = data.room;
+      setRoom(data.room)
+      console.log('leaved_room')
+    }
 
     const handleChangeGameType = (data: { game_type: string, room_id: string }) => {
       setGameType(data.game_type);
@@ -154,14 +144,14 @@ export default function Room() {
       navigate('/');
     }
 
-
     socketService.listen("game_type_changed", (data: { game_type: string, room_id: string }) => handleChangeGameType(data));
     socketService.listen('started_game', (data: { message: string, game: Game }) => handleStartGame(data));
     socketService.listen('kicked', (data: { room: RoomClass, kicked_id: string }) => handleKick(data));
     socketService.listen('added_bot', (data: { room: RoomClass }) => onListenAddBotEvent(data));
     socketService.listen('start_game_failed', (data: { message: string }) => handleStartGameFailed(data));
     socketService.listen("joined_room", (data: { room: RoomClass }) => handleJoinRoom(data));
-    // socketService.listen("room_destroyed", (data: { message: string }) => onRoomDestroyed(data));
+    socketService.listen("leaved_room", (data: { room: RoomClass }) => handleLeaveRoom(data));
+    socketService.listen("room_destroyed", (data: { message: string }) => onRoomDestroyed(data));
 
     return () => {
       socketService.removeListener('game_type_changed', handleChangeGameType);
@@ -170,11 +160,11 @@ export default function Room() {
       socketService.removeListener('added_bot', onListenAddBotEvent);
       socketService.removeListener('start_game_failed', handleStartGameFailed);
       socketService.removeListener("joined_room", handleJoinRoom);
-      // socketService.removeListener("room_destroyed", onRoomDestroyed);
+      socketService.removeListener("leaved_room", (data: { room: RoomClass }) => handleLeaveRoom(data));
+      socketService.removeListener("room_destroyed", onRoomDestroyed);
     };
 
   }, [])
-
 
   const onStartGame = () => {
     if (room?.owner.info.id !== player.id) return;
@@ -184,6 +174,11 @@ export default function Room() {
   const handlePickGameType = (gameType: GameType) => {
     if (room?.owner.info.id !== player.id) return;
     socketService.emit('change_game_type', { "room_id": room?.id, "game_type": gameType });
+  }
+
+  const handleLeavedRoom = () => {
+    socketService.emit('leave_room', {"room_id": room.id})
+    navigate("/");
   }
 
   const onAddBot = () => {
@@ -200,7 +195,12 @@ export default function Room() {
     (!isLoading && room?.id) ?
       <section className="h-[70vh] w-full sm:w-[60%] lg:w-[40%] flex flex-col items-center justify-center gap-10">
         <Logo width={10} height={10} />
-
+        <RoomTimer room={room}/>
+        <div className="flex justify-start">
+          <button onClick={() => handleLeavedRoom()} className="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75">
+            Leave
+          </button>
+        </div>
         <article className="bg-black-300 w-[90%] rounded-lg p-5 text-center">
           <h1 className="font-bold mb-5 text-lg">PICK GAME TYPE!</h1>
 

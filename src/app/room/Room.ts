@@ -5,17 +5,19 @@ import Participant, { Status } from './Participant';
 
 
 export default class RoomClass {
-    id: string;
-    name: string;
-    competitor: Participant | null = null;
-    owner: Participant;
-    guests: User[] = [];
-    game!: Game; // what means of this statement? game!: Game  
+    public id: string;
+    public name: string;
+    public owner: Participant;
+    public guests: User[] = [];
+    public competitor: Participant | null = null;
+    public game!: Game; // what means of this statement? game!: Game  
+    public createdTime: string;
 
-    constructor(id: string, name: string, owner: User) {
+    constructor(id: string, name: string, owner: User, createdTime: string) {
         this.id = id;
         this.name = name;
         this.owner = new Participant(owner);
+        this.createdTime = createdTime;
     }
 
     addGuest(user: User): void {
