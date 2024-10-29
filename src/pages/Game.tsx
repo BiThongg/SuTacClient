@@ -21,13 +21,11 @@ export default function Game() {
   return (
     isLoading ? <Loading /> :
       <>
-        <div className="h-14"> <ChessTimer game={game} initialTime={30} /> </div>
-        <section className="h-screen md:h-[70vh] w-full sm:w-[60%] lg:w-[40%] flex flex-col justify-center items-center">
+        <ChessTimer game={game} initialTime={30} />
+        <section className="h-screen md:h-[60vh] w-full sm:w-[60%] lg:w-[40%] flex flex-col justify-center items-center -translate-y-16">
           {sizeBoard === 3 ? (<TicTacToeBoard board={game?.board} onMove={onMove} />)
             : (<SumokuBoard board={game?.board} onMove={onMove} />)}
         </section>
       </>
   );
-
 }
-

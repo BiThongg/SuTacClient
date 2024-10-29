@@ -11,7 +11,7 @@ export default function SumokuBoard({
 }) {
 
   return (
-    <table className="table-auto border-collapse w-full">
+    <table className="table-auto border-collapse w-full translate-y-9">
       <tbody>
         {board.map((row, i) => (
           <tr key={i}>
