@@ -11,14 +11,14 @@ export default function SumokuBoard({
 }) {
 
   return (
-    <table className="table-auto border-collapse w-full translate-y-9">
+    <table className="table-auto border-collapse w-full sm:translate-y-9 md:translate-y-12 lg:translate-y-[4rem]">
       <tbody>
         {board.map((row, i) => (
           <tr key={i}>
             {row.map((col, j) => (
               <td
                 key={j}
-                className="border bg-black-500 h-10 rounded-md cursor-pointer"
+                className="border bg-black-500 rounded-md cursor-pointer md:h-10 lg:py-[0.4rem]"
                 onClick={() => {
                   onMove({ x: j, y: i });
                 }}>
