@@ -138,6 +138,17 @@ export default function Room() {
       setRoom(data.room);
     }
 
+    const handleLeaveRoom = (data: { room: RoomClass, leave_id: string }) => {
+      if (data.leave_id !== player.id) {
+        window.room = data.room;
+        setRoom(data.room);
+        return;
+      }
+
+      window.room = {};
+      navigate('/');
+    }
+
     const onRoomDestroyed = (data: { message: string }) => {
       modal?.setModal({
         showModal: true,
@@ -161,6 +172,7 @@ export default function Room() {
     socketService.listen('added_bot', (data: { room: RoomClass }) => onListenAddBotEvent(data));
     socketService.listen('start_game_failed', (data: { message: string }) => handleStartGameFailed(data));
     socketService.listen("joined_room", (data: { room: RoomClass }) => handleJoinRoom(data));
+    socketService.listen('leaved_room', (data: { room: RoomClass, leave_id: string }) => handleLeaveRoom(data));
     // socketService.listen("room_destroyed", (data: { message: string }) => onRoomDestroyed(data));
 
     return () => {
@@ -170,6 +182,7 @@ export default function Room() {
       socketService.removeListener('added_bot', onListenAddBotEvent);
       socketService.removeListener('start_game_failed', handleStartGameFailed);
       socketService.removeListener("joined_room", handleJoinRoom);
+      socketService.removeListener('leave_room', handleLeaveRoom);
       // socketService.removeListener("room_destroyed", onRoomDestroyed);
     };
 
@@ -190,6 +203,10 @@ export default function Room() {
     socketService.emit('add_bot', { "room_id": room.id, "user_id": player.id });
   }
 
+  const onLeaveRoom = () => {
+    socketService.emit('leave_room', { "room_id": room.id });
+  }
+
 
   const onKick = (kick_id: string) => {
     // console.log(kick_id)
@@ -200,6 +217,9 @@ export default function Room() {
     (!isLoading && room?.id) ?
       <section className="h-[70vh] w-full sm:w-[60%] lg:w-[40%] flex flex-col items-center justify-center gap-10">
         <Logo width={10} height={10} />
+        <button className="bg-red-400 rounded-full w-15 px-3 py-3 text-black-300" onClick={onLeaveRoom}>
+          Leave Room
+        </button>
 
         <article className="bg-black-300 w-[90%] rounded-lg p-5 text-center">
           <h1 className="font-bold mb-5 text-lg">PICK GAME TYPE!</h1>
