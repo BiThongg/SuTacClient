@@ -217,7 +217,7 @@ export default function Room() {
     (!isLoading && room?.id) ?
       <section className="h-[70vh] w-full sm:w-[60%] lg:w-[40%] flex flex-col items-center justify-center gap-10">
         <Logo width={10} height={10} />
-        <button className="bg-red-400 rounded-full w-15 px-3 py-3 text-black-300" onClick={onLeaveRoom}>
+        <button className="bg-yellow-400 rounded-full w-15 px-3 py-3 text-black-300 top-5 left-5 absolute" onClick={onLeaveRoom}>
           Leave Room
         </button>
 
