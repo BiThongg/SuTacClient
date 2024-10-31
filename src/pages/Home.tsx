@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import socketService from "@app/socket/Socket";
 import useSocketConnect from "@hooks/useSocketConnect";
 import { ModalContext } from "@context/ContextModal";
+import RoomClass from "@app/room/Room";
 
 function Home() {
   const modal = useContext(ModalContext);
@@ -24,24 +25,52 @@ function Home() {
     }
   }, [isLoading])
 
+
+  // useEffect(() => {
+  //   if (isLoading) {
+  //     socketService.connect();
+  //     return;
+  //   }
+  //
+  //   const handleFetchRoom = (data: { room: RoomClass }) => {
+  //     if (data?.room?.id) {
+  //       clearInterval(interval);
+  //       navigate("/room");
+  //     }
+  //
+  //     else clearInterval(interval);
+  //
+  //   }
+  //
+  //   socketService.listen('room_info', (data: { room: RoomClass }) => handleFetchRoom(data));
+  //
+  //   const interval = setInterval(() => {
+  //     socketService.emit('get_room', { "user_id": user?.id });
+  //   }, 500);
+  //
+  //   return () => {
+  //     socketService.removeListener('room_info', handleFetchRoom);
+  //     clearInterval(interval);
+  //   }
+  //
+  // }, [isLoading])
+
+
   useEffect(() => {
     if (!window.localStorage.getItem("user")) {
       navigate("/auth");
     } else {
       setUser(JSON.parse(window.localStorage.getItem("user") || "{}"))
     }
-
-  }, [window.localStorage.getItem("user")]);
+  }, []);
 
 
   useEffect(() => {
-    socketService.listen("room_created", (data: { room: Room }) => onListenRoomCreateEvent(data))
-    socketService.listen("joined_room", (data: { room: Room }) => {
-      window.room = data.room;
-      navigate("/room");
-    })
+    const onJoinRoomSuccess = (data: { room: RoomClass }) => {
+      navigate("/room")
+    }
 
-    socketService.listen("join_room_failed", (data: { message: string }) => {
+    const onJoinRoomFailed = (data: { message: string }) => {
       modal?.setModal({
         showModal: true,
         title: "Notification",
@@ -54,24 +83,21 @@ function Home() {
         btnGray: "no, cancel",
         isNextRound: false,
       });
-    })
+    }
+
+    socketService.listen("room_created", (data: { room: RoomClass }) => onJoinRoomSuccess(data))
+    socketService.listen("joined_room", (data: { room: RoomClass }) => onJoinRoomSuccess(data))
+    socketService.listen("join_room_failed", (data: { message: string }) => onJoinRoomFailed(data))
+
+    return () => {
+      socketService.removeListener("room_created", onJoinRoomSuccess)
+      socketService.removeListener("joined_room", onJoinRoomSuccess)
+      socketService.removeListener("join_room_failed", onJoinRoomFailed)
+    }
+
   }, [])
 
 
-  socketService.listen("join_room_failed", (data: { message: string }) => {
-    modal?.setModal({
-      showModal: true,
-      title: "Notification",
-      message: {
-        text: data.message,
-        img: "",
-        color: "",
-      },
-      btnYellow: "Ok",
-      btnGray: "",
-      isNextRound: false,
-    });
-  })
 
   const handleJoinRoom = () => {
     socketService.emit("join_room", { room_id: roomIdRef.current?.value, user_id: user?.id })
@@ -80,11 +106,6 @@ function Home() {
   const onCreateRoom = () => {
     console.log({ room_name: "", user_id: user?.id })
     socketService.emit("create_room", { room_name: "", user_id: user?.id })
-  }
-
-  const onListenRoomCreateEvent = (data: { room: Room }) => {
-    window.room = data.room;
-    navigate("/room")
   }
   // how to add a new func for listening event from server 
 

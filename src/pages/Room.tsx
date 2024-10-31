@@ -27,22 +27,6 @@ export default function Room() {
   const preventPointer = player.id !== room?.owner?.info.id ? 'pointer-events-none' : '';
   const modal = useContext(ModalContext);
 
-
-  // useEffect(() => {
-  //   socketService.connect();
-  // }, [])
-  //
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     console.log(isLoading)
-  //     if (!isLoading) {
-  //       socketService.emit('get_room', { "user_id": player.id });
-  //       clearInterval(interval);
-  //     }
-  //   }, 500);
-  //   return () => clearInterval(interval);
-  // }, [])
-
   useEffect(() => {
     if (isLoading) {
       socketService.connect();
@@ -67,14 +51,16 @@ export default function Room() {
       }
 
       if (room?.id) {
-        // console.log(room)
         window.room = room;
         clearInterval(interval);
       }
       socketService.emit('get_room', { "user_id": player.id });
     }, 500);
 
-    return () => clearInterval(interval);
+    return () => {
+      socketService.removeListener('room_info', handleFetchRoom);
+      clearInterval(interval);
+    }
 
   }, [isLoading])
 
