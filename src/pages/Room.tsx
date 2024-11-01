@@ -11,6 +11,7 @@ import socketService from '@app/socket/Socket';
 import useSocketConnect from '@hooks/useSocketConnect';
 import { ModalContext } from '@context/ContextModal';
 import RingSpin from "@assets/ring-resize.svg";
+import ChatBox from './ChatBox';
 
 enum GameType {
   SUMOKU = "CASUAL",
@@ -207,6 +208,7 @@ export default function Room() {
           Leave Room
         </button>
 
+        <ChatBox currentUserId={player.id} roomId={room.id} />
         <article className="bg-black-300 w-[90%] rounded-lg p-5 text-center">
           <h1 className="font-bold mb-5 text-lg">PICK GAME TYPE!</h1>
 

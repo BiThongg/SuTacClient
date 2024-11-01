@@ -43,6 +43,11 @@ class SocketService {
     this.socket.removeListener(eventName, listener);
   }
 
+  offListener(eventName: string): void {
+    if (!this.socket) return;
+    this.socket.off(eventName);
+  }
+
   emit(eventName: string, data: any): void {
     if (!this.socket) return;
     this.socket.emit(eventName, data);
