@@ -5,8 +5,12 @@ import Loading from "@components/loading/Loading";
 import useSocketConnect from "@hooks/useSocketConnect";
 import useBotMode from "@hooks/useBotMode";
 import usePvPMode from "@hooks/usePvPMode";
-import { useEffect, useState } from "react";
 import ChessTimer from "./ChessTimer";
+import IconBox from "@components/room/IconBox";
+
+
+
+
 export default function Game() {
   const { isLoading }: { isLoading: boolean } = useSocketConnect();
   const sizeBoard = window?.game?.board.length;
@@ -30,6 +34,7 @@ export default function Game() {
   ) : (
     <div className="flex flex-col items-center ">
       <ChessTimer game={game} initialTime={30} />
+      <IconBox game={game} />
       <section className="w-[90%] lg:w-full overflow-auto flex">
         <div className="px-8"></div>
         {sizeBoard === 3 ? (

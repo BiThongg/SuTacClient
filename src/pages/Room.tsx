@@ -11,7 +11,7 @@ import socketService from "@app/socket/Socket";
 import useSocketConnect from "@hooks/useSocketConnect";
 import { ModalContext } from "@context/ContextModal";
 import RingSpin from "@assets/ring-resize.svg";
-import ChatBox from "./ChatBox";
+import ChatBox from "@components/room/ChatBox";
 
 enum GameType {
   SUMOKU = "CASUAL",
@@ -247,10 +247,9 @@ export default function Room() {
         <article className="bg-black-400 py-3 rounded-lg flex w-full mb-5">
           <button
             onClick={() => handlePickGameType(GameType.SUMOKU)}
-            className={`${
-              pickGameType === GameType.SUMOKU &&
+            className={`${pickGameType === GameType.SUMOKU &&
               `bg-gray-400 rounded-lg px-3 py-3 ml-3`
-            } w-1/2 mx-auto flex justify-center items-center ${preventPointer}`}
+              } w-1/2 mx-auto flex justify-center items-center ${preventPointer}`}
           >
             <p
               className={
@@ -264,10 +263,9 @@ export default function Room() {
           </button>
           <button
             onClick={() => handlePickGameType(GameType.TIC_TAC_TOE)}
-            className={`${
-              pickGameType === GameType.TIC_TAC_TOE &&
+            className={`${pickGameType === GameType.TIC_TAC_TOE &&
               `bg-gray-400 rounded-lg px-6 py-3 mr-3`
-            } w-1/2 mx-auto flex justify-center items-center ${preventPointer}`}
+              } w-1/2 mx-auto flex justify-center items-center ${preventPointer}`}
           >
             <p
               className={
