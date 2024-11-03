@@ -15,12 +15,12 @@ export default function usePvPMode(): GameHook {
   const [user, __] = useState<User>(
     localStorage.getItem("user")
       ? JSON.parse(localStorage.getItem("user") || "{}")
-      : {}
+      : {},
   );
   const modal = useContext(ModalContext);
 
   const player: Player = game.players.filter(
-    (player) => player?.user?.id === user.id
+    (player) => player?.user?.id === user.id,
   )[0];
 
   socketService.listen("moved", (data: { game: Game }) => {

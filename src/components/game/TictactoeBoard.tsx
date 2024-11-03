@@ -31,7 +31,7 @@ export default function TicTacToeBoard({
               />
             </Btn>
           </div>
-        ))
+        )),
       )}
     </section>
   );

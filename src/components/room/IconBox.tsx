@@ -43,7 +43,7 @@ const IconBox: React.FC<IIconBoxComponentProps> = ({ game }) => {
     const competitor: any | User = game.players.find(
       (player) =>
         player.user?.id !==
-        JSON.parse(`${window.localStorage.getItem("user")}`).id
+        JSON.parse(`${window.localStorage.getItem("user")}`).id,
     )?.user;
 
     setCompetitor(competitor);

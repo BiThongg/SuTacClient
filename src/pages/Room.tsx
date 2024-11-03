@@ -21,7 +21,7 @@ enum GameType {
 export default function Room() {
   const [pickGameType, setGameType] = useState<string>(GameType.TIC_TAC_TOE);
   const [player, _] = useState<User>(
-    JSON.parse(localStorage.getItem("user") || "{}")
+    JSON.parse(localStorage.getItem("user") || "{}"),
   );
   const [room, setRoom] = useState<RoomClass>();
   const navigate = useNavigate();
@@ -46,7 +46,7 @@ export default function Room() {
     };
 
     socketService.listen("room_info", (data: { room: RoomClass }) =>
-      handleFetchRoom(data)
+      handleFetchRoom(data),
     );
 
     const interval = setInterval(() => {
@@ -159,28 +159,28 @@ export default function Room() {
     socketService.listen(
       "game_type_changed",
       (data: { game_type: string; room_id: string }) =>
-        handleChangeGameType(data)
+        handleChangeGameType(data),
     );
     socketService.listen(
       "started_game",
-      (data: { message: string; game: Game }) => handleStartGame(data)
+      (data: { message: string; game: Game }) => handleStartGame(data),
     );
     socketService.listen(
       "kicked",
-      (data: { room: RoomClass; kicked_id: string }) => handleKick(data)
+      (data: { room: RoomClass; kicked_id: string }) => handleKick(data),
     );
     socketService.listen("added_bot", (data: { room: RoomClass }) =>
-      onListenAddBotEvent(data)
+      onListenAddBotEvent(data),
     );
     socketService.listen("start_game_failed", (data: { message: string }) =>
-      handleStartGameFailed(data)
+      handleStartGameFailed(data),
     );
     socketService.listen("joined_room", (data: { room: RoomClass }) =>
-      handleJoinRoom(data)
+      handleJoinRoom(data),
     );
     socketService.listen(
       "leaved_room",
-      (data: { room: RoomClass; leave_id: string }) => handleLeaveRoom(data)
+      (data: { room: RoomClass; leave_id: string }) => handleLeaveRoom(data),
     );
     // socketService.listen("room_destroyed", (data: { message: string }) => onRoomDestroyed(data));
 

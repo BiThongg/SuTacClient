@@ -17,7 +17,7 @@ export default function useBotMode(): GameHook {
   const [user, __] = useState<User>(
     localStorage.getItem("user")
       ? JSON.parse(localStorage.getItem("user") || "{}")
-      : {}
+      : {},
   );
   const [isWaitBot, setIsWaitBot] = useState<boolean>(false);
 
@@ -29,7 +29,7 @@ export default function useBotMode(): GameHook {
   })[0].symbol;
 
   const player: Player = game.players.filter(
-    (player) => player?.user?.id === user.id
+    (player) => player?.user?.id === user.id,
   )[0];
 
   useEffect(() => {

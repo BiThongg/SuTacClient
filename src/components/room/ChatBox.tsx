@@ -18,22 +18,25 @@ const ChatBox: React.FC<IChatBoxProps> = ({ currentUserId, roomId }) => {
 
   useEffect(() => {
     const handleReceiveMessage = (newMessage: any) => {
-      setChat((prevChat) => [...prevChat,
-      {
-        name: newMessage.name,
-        message: newMessage.message,
-        userId: newMessage.user_id
-      }]);
-
+      setChat((prevChat) => [
+        ...prevChat,
+        {
+          name: newMessage.name,
+          message: newMessage.message,
+          userId: newMessage.user_id,
+        },
+      ]);
 
       const timeout = setTimeout(() => {
         const chatBox = document.querySelector(".h-80");
         chatBox?.scrollTo(0, chatBox.scrollHeight);
         clearTimeout(timeout);
       }, 100);
-    }
+    };
 
-    socketService.listen("receive_message", (newMessage) => handleReceiveMessage(newMessage));
+    socketService.listen("receive_message", (newMessage) =>
+      handleReceiveMessage(newMessage),
+    );
 
     return () => {
       socketService.offListener("receive_message", handleReceiveMessage);
@@ -54,14 +57,16 @@ const ChatBox: React.FC<IChatBoxProps> = ({ currentUserId, roomId }) => {
         {chat.map((msg, index) => (
           <div
             key={index}
-            className={`flex ${msg.userId === currentUserId ? "justify-end" : "justify-start"
-              } mb-2`}
+            className={`flex ${
+              msg.userId === currentUserId ? "justify-end" : "justify-start"
+            } mb-2`}
           >
             <div
-              className={`rounded-lg p-2 ${msg.userId === currentUserId
-                ? "bg-blue-500 text-white max-w-xs text-right"
-                : "bg-gray-200 text-gray-900 max-w-xs"
-                }`}
+              className={`rounded-lg p-2 ${
+                msg.userId === currentUserId
+                  ? "bg-blue-500 text-white max-w-xs text-right"
+                  : "bg-gray-200 text-gray-900 max-w-xs"
+              }`}
             >
               <p className="text-sm font-semibold mb-1">
                 {msg.userId === currentUserId ? "You" : msg.name}
@@ -76,7 +81,6 @@ const ChatBox: React.FC<IChatBoxProps> = ({ currentUserId, roomId }) => {
           type="text"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-
           placeholder="Type a message"
           className="flex-grow border border-gray-300 rounded-l-lg p-2 focus:outline-none"
         />

@@ -83,13 +83,13 @@ function Home() {
     };
 
     socketService.listen("room_created", (data: { room: RoomClass }) =>
-      onJoinRoomSuccess(data)
+      onJoinRoomSuccess(data),
     );
     socketService.listen("joined_room", (data: { room: RoomClass }) =>
-      onJoinRoomSuccess(data)
+      onJoinRoomSuccess(data),
     );
     socketService.listen("join_room_failed", (data: { message: string }) =>
-      onJoinRoomFailed(data)
+      onJoinRoomFailed(data),
     );
 
     return () => {
