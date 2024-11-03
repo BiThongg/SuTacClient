@@ -17,25 +17,26 @@ const ChatBox: React.FC<IChatBoxProps> = ({ currentUserId, roomId }) => {
   const [chat, setChat] = useState<IMessage[]>([]);
 
   useEffect(() => {
-    socketService.listen("receive_message", (newMessage) => {
-      setChat((prevChat) => [
-        ...prevChat,
-        {
-          name: newMessage.name,
-          message: newMessage.message,
-          userId: newMessage.user_id,
-        },
-      ]);
+    const handleReceiveMessage = (newMessage: any) => {
+      setChat((prevChat) => [...prevChat,
+      {
+        name: newMessage.name,
+        message: newMessage.message,
+        userId: newMessage.user_id
+      }]);
+
 
       const timeout = setTimeout(() => {
         const chatBox = document.querySelector(".h-80");
         chatBox?.scrollTo(0, chatBox.scrollHeight);
         clearTimeout(timeout);
       }, 100);
-    });
+    }
+
+    socketService.listen("receive_message", (newMessage) => handleReceiveMessage(newMessage));
 
     return () => {
-      socketService.offListener("receive_message");
+      socketService.offListener("receive_message", handleReceiveMessage);
     };
   }, []);
 
@@ -48,7 +49,6 @@ const ChatBox: React.FC<IChatBoxProps> = ({ currentUserId, roomId }) => {
   };
 
   return (
-
     <div className="bg-black-300 w-[90%] p-5 max-w-md mx-auto rounded-lg">
       <div className="h-80 p-2 mb-4 overflow-y-auto rounded-lg">
         {chat.map((msg, index) => (
@@ -76,7 +76,6 @@ const ChatBox: React.FC<IChatBoxProps> = ({ currentUserId, roomId }) => {
           type="text"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          // set color for input when focus
 
           placeholder="Type a message"
           className="flex-grow border border-gray-300 rounded-l-lg p-2 focus:outline-none"
