@@ -5,13 +5,7 @@ export class SumokuGame extends Game {
     super(size);
   }
 
-  getWinner() {
-  }
-  updateTurn() {
-  }
-  randomSeed() {
-  }
-
-
+  getWinner() {}
+  updateTurn() {}
+  randomSeed() {}
 }
-

@@ -4,27 +4,34 @@ import { Cell } from "@app/Utils";
 
 export default function SumokuBoard({
   board,
-  onMove
+  onMove,
 }: {
   board: Cell[][];
-  onMove: (point: { x: number, y: number }) => void;
+  onMove: (point: { x: number; y: number }) => void;
 }) {
-
   return (
-    <table className="table-auto border-collapse w-full sm:translate-y-9 md:translate-y-12 lg:translate-y-[4rem]">
+    <table className="w-[700px] table-fixed border-collapse">
       <tbody>
         {board.map((row, i) => (
-          <tr key={i}>
+          <tr
+            key={i}
+            className="h-[50px] min-h-[50px] max-h-[50px] w-[50px] min-w-[50px] max-w-[50px]"
+          >
             {row.map((col, j) => (
               <td
                 key={j}
-                className="border bg-black-500 rounded-md cursor-pointer h-10 lg:py-[0.4rem] p-1"
+                className="border bg-black-500 rounded-md cursor-pointer h-[50px] min-h-[50px] max-h-[50px] w-[50px] min-w-[50px] max-w-[50px] lg:py-[0.4rem] p-1"
                 onClick={() => {
                   onMove({ x: j, y: i });
-                }}>
-                <img src={
-                  col === Cell.X ? IconX : col === Cell.O ? IconO : undefined
-                } alt="" className="w-8 mx-auto" />
+                }}
+              >
+                <img
+                  src={
+                    col === Cell.X ? IconX : col === Cell.O ? IconO : undefined
+                  }
+                  alt=""
+                  className="w-8 mx-auto"
+                />
               </td>
             ))}
           </tr>
@@ -34,4 +41,3 @@ export default function SumokuBoard({
     </table>
   );
 }
-

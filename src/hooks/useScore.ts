@@ -13,7 +13,7 @@ export function useScore(): [
   string,
   string,
   Score,
-  React.Dispatch<React.SetStateAction<Score>>
+  React.Dispatch<React.SetStateAction<Score>>,
 ] {
   const location = useLocation();
 

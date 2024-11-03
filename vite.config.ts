@@ -10,7 +10,7 @@ export default defineConfig({
     alias: {
       "@app": fileURLToPath(new URL("./src/app", import.meta.url)),
       "@components": fileURLToPath(
-        new URL("./src/components", import.meta.url)
+        new URL("./src/components", import.meta.url),
       ),
       "@pages": fileURLToPath(new URL("./src/pages", import.meta.url)),
       "@assets": fileURLToPath(new URL("./src/assets", import.meta.url)),
@@ -20,7 +20,7 @@ export default defineConfig({
       "@context": fileURLToPath(new URL("./src/context", import.meta.url)),
       "@hooks": fileURLToPath(new URL("./src/hooks", import.meta.url)),
       "@interfaces": fileURLToPath(
-        new URL("./src/interfaces", import.meta.url)
+        new URL("./src/interfaces", import.meta.url),
       ),
     },
   },

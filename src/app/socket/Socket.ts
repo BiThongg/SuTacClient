@@ -1,4 +1,4 @@
-import { io, Socket } from 'socket.io-client';
+import { io, Socket } from "socket.io-client";
 
 interface User {
   id: string;
@@ -8,11 +8,11 @@ interface User {
 
 class SocketService {
   private socket: Socket | null = null;
-  private readonly url: string = "localhost:5000";
+  private readonly url: string = import.meta.env.VITE_SERVER_URL;
 
   constructor() {
     this.socket = io(this.url, {
-      transports: ['websocket'], // Ensure websocket is used
+      transports: ["websocket"], // Ensure websocket is used
       autoConnect: false,
     });
   }
@@ -20,15 +20,15 @@ class SocketService {
   connect(): void {
     if (!this.socket) return;
 
-    const user: User = JSON.parse(localStorage.getItem('user') || '{}');
+    const user: User = JSON.parse(localStorage.getItem("user") || "{}");
 
     this.socket = io(this.url, {
       query: { user_id: user.id },
-    })
+    });
 
-    this.socket.on('error', (error: any) => {
-      localStorage.removeItem('user')
-    })
+    this.socket.on("error", (error: any) => {
+      localStorage.removeItem("user");
+    });
   }
 
   listen(eventName: string, callback: (data: any) => void): void {
@@ -36,7 +36,6 @@ class SocketService {
 
     this.socket.on(eventName, callback);
   }
-
 
   removeListener(eventName: string, listener: (...args: any[]) => void): void {
     if (!this.socket) return;
@@ -57,14 +56,13 @@ class SocketService {
   disconnect(): void {
     if (this.socket) {
       this.socket.disconnect();
-      console.log('Disconnected from the server.');
+      console.log("Disconnected from the server.");
     }
   }
 
   status(): boolean {
     return this.socket?.connected || false;
   }
-
 }
 
 const socketService = new SocketService();

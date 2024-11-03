@@ -7,7 +7,7 @@ import "@styles/global.css";
 import "@styles/tailwind.css";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  <main className="bg-black-400 text-gray-400 h-screen flex flex-col justify-center items-center">
+  <main className="min-h-screen overflow-hidden pb-16 bg-black-400 text-gray-400 flex flex-col justify-center items-center">
     <BrowserRouter>
       <ModalProvider>
         <App />

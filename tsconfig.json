@@ -27,7 +27,8 @@
       "@hooks/*": ["src/hooks/*"],
       "@interfaces/*": ["src/interfaces/*"],
       "@app/*": ["src/app/*"]
-    }
+    },
+    "types": ["./global.d.ts"]
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]

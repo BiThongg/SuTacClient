@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import socketService from '@app/socket/Socket';
+import React, { useState, useEffect } from "react";
+import socketService from "@app/socket/Socket";
 
 interface IMessage {
   name: string;
@@ -13,24 +13,31 @@ interface IChatBoxProps {
 }
 
 const ChatBox: React.FC<IChatBoxProps> = ({ currentUserId, roomId }) => {
-  const [message, setMessage] = useState<string>('');
+  const [message, setMessage] = useState<string>("");
   const [chat, setChat] = useState<IMessage[]>([]);
 
   useEffect(() => {
-    socketService.listen('receive_message', (newMessage) => {
-      setChat((prevChat) => [...prevChat, {name: newMessage.name, message: newMessage.message, userId: newMessage.user_id}]);
+    socketService.listen("receive_message", (newMessage) => {
+      setChat((prevChat) => [
+        ...prevChat,
+        {
+          name: newMessage.name,
+          message: newMessage.message,
+          userId: newMessage.user_id,
+        },
+      ]);
     });
 
     return () => {
-        socketService.offListener('receive_message');
+      socketService.offListener("receive_message");
     };
   }, []);
 
   const handleSendMessage = () => {
-    if(message.trim()) {
+    if (message.trim()) {
       const newMessage = { message, room_id: roomId };
-      socketService.emit('send_message', newMessage);
-      setMessage('');
+      socketService.emit("send_message", newMessage);
+      setMessage("");
     }
   };
 
@@ -41,18 +48,18 @@ const ChatBox: React.FC<IChatBoxProps> = ({ currentUserId, roomId }) => {
           <div
             key={index}
             className={`flex ${
-              msg.userId === currentUserId ? 'justify-end' : 'justify-start'
+              msg.userId === currentUserId ? "justify-end" : "justify-start"
             } mb-2`}
           >
             <div
               className={`rounded-lg p-2 ${
                 msg.userId === currentUserId
-                  ? 'bg-blue-500 text-white max-w-xs text-right'
-                  : 'bg-gray-200 text-gray-900 max-w-xs'
+                  ? "bg-blue-500 text-white max-w-xs text-right"
+                  : "bg-gray-200 text-gray-900 max-w-xs"
               }`}
             >
               <p className="text-sm font-semibold mb-1">
-                {msg.userId === currentUserId ? 'You' : msg.name}
+                {msg.userId === currentUserId ? "You" : msg.name}
               </p>
               <p>{msg.message}</p>
             </div>

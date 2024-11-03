@@ -24,7 +24,7 @@ export const state = {
 export const ModalContext = createContext<{
   modal: ModalType;
   setModal: Dispatch<SetStateAction<ModalType>>;
-}>({ modal: state, setModal: () => { } });
+}>({ modal: state, setModal: () => {} });
 
 export function ModalProvider({ children }: { children: ReactNode }) {
   const [modal, setModal] = useState<ModalType>(state);

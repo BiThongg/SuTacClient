@@ -5,12 +5,11 @@ import { Cell } from "@app/Utils";
 
 export default function TicTacToeBoard({
   board,
-  onMove
+  onMove,
 }: {
-  board: Cell[][]
-  onMove: (point: { x: number, y: number }) => void
+  board: Cell[][];
+  onMove: (point: { x: number; y: number }) => void;
 }) {
-
   return (
     <section className="grid grid-cols-3 gap-5 w-[90%] mx-auto mb-10">
       {board.map((row, i) =>
@@ -18,7 +17,7 @@ export default function TicTacToeBoard({
           <div
             key={j}
             className="pb-2 bg-black-500 w-full h-[99px] rounded-md"
-          // data-value={value}
+            // data-value={value}
           >
             <Btn
               // classCSS={`${isWinner === "X"
@@ -28,18 +27,19 @@ export default function TicTacToeBoard({
               //     : "bg-black-300"
               //   } rounded-md py-6 h-full w-full`}
               classCSS="bg-black-300 rounded-md py-6 h-full w-full"
-              onClick={() =>
-                onMove({ x: j, y: i })
-              }
+              onClick={() => onMove({ x: j, y: i })}
             >
-              <img src={
-                col === Cell.X ? IconX : col === Cell.O ? IconO : undefined
-              } alt="" className="w-11 mx-auto" />
+              <img
+                src={
+                  col === Cell.X ? IconX : col === Cell.O ? IconO : undefined
+                }
+                alt=""
+                className="w-11 mx-auto"
+              />
             </Btn>
           </div>
-        ))
+        )),
       )}
     </section>
-  )
+  );
 }
-

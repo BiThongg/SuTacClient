@@ -23,7 +23,7 @@ export function useWin() {
     invertTurn: string,
     pickPlayer: string,
     typeGame: string,
-    isTie = false
+    isTie = false,
   ) => {
     if (isTie) {
       modal?.setModal({
@@ -50,8 +50,8 @@ export function useWin() {
             ? "player 1 wins!"
             : "player 2 wins!"
           : invertTurn === pickPlayer
-          ? "you won!"
-          : "oh no, you lost…",
+            ? "you won!"
+            : "oh no, you lost…",
       message: {
         text: "takes the round",
         img: invertTurn === "O" ? IconO : IconX,
@@ -66,7 +66,7 @@ export function useWin() {
   const newTickTacToeColor = (
     ticTacToe: GridGame[],
     pickPlayer: string,
-    position: number[] = []
+    position: number[] = [],
   ): GridGame[] => {
     return ticTacToe.map((item) => {
       if (position.includes(item.id)) {
@@ -92,7 +92,7 @@ export function useWin() {
     pickPlayer: string,
     typeGame: string,
     ticTacToe: GridGame[],
-    setTicTacToe: React.Dispatch<React.SetStateAction<GridGame[]>>
+    setTicTacToe: React.Dispatch<React.SetStateAction<GridGame[]>>,
   ): string => {
     if (filterTurn.length >= 3) {
       if (
@@ -103,7 +103,7 @@ export function useWin() {
         const newTicTacToe = newTickTacToeColor(
           ticTacToe,
           invertTurn,
-          [1, 2, 3]
+          [1, 2, 3],
         );
         setTicTacToe(newTicTacToe);
 
@@ -118,7 +118,7 @@ export function useWin() {
         const newTicTacToe = newTickTacToeColor(
           ticTacToe,
           invertTurn,
-          [4, 5, 6]
+          [4, 5, 6],
         );
         setTicTacToe(newTicTacToe);
 
@@ -134,7 +134,7 @@ export function useWin() {
         const newTicTacToe = newTickTacToeColor(
           ticTacToe,
           invertTurn,
-          [7, 8, 9]
+          [7, 8, 9],
         );
         setTicTacToe(newTicTacToe);
 
@@ -150,7 +150,7 @@ export function useWin() {
         const newTicTacToe = newTickTacToeColor(
           ticTacToe,
           invertTurn,
-          [1, 4, 7]
+          [1, 4, 7],
         );
         setTicTacToe(newTicTacToe);
 
@@ -166,7 +166,7 @@ export function useWin() {
         const newTicTacToe = newTickTacToeColor(
           ticTacToe,
           invertTurn,
-          [2, 5, 8]
+          [2, 5, 8],
         );
         setTicTacToe(newTicTacToe);
 
@@ -182,7 +182,7 @@ export function useWin() {
         const newTicTacToe = newTickTacToeColor(
           ticTacToe,
           invertTurn,
-          [3, 6, 9]
+          [3, 6, 9],
         );
         setTicTacToe(newTicTacToe);
 
@@ -198,7 +198,7 @@ export function useWin() {
         const newTicTacToe = newTickTacToeColor(
           ticTacToe,
           invertTurn,
-          [1, 5, 9]
+          [1, 5, 9],
         );
         setTicTacToe(newTicTacToe);
 
@@ -214,7 +214,7 @@ export function useWin() {
         const newTicTacToe = newTickTacToeColor(
           ticTacToe,
           invertTurn,
-          [3, 5, 7]
+          [3, 5, 7],
         );
         setTicTacToe(newTicTacToe);
 
@@ -241,7 +241,7 @@ export function useWin() {
       setScore,
       score,
       setTicTacToe,
-    }: ObjectCheckWinner
+    }: ObjectCheckWinner,
   ) => {
     const invertTurn = turn === "X" ? "O" : "X";
 
@@ -255,7 +255,7 @@ export function useWin() {
       pickPlayer,
       typeGame,
       ticTacToe,
-      setTicTacToe
+      setTicTacToe,
     );
 
     if (playerWin === "X") {

@@ -1,7 +1,6 @@
-
-import Point, { Cell } from '../Utils';
-import User from '../user/User';
-import Game from '../game/Game';
+import Point, { Cell } from "../Utils";
+import User from "../user/User";
+import Game from "../game/Game";
 
 class Player {
   game: Game | null = null;
@@ -15,7 +14,7 @@ class Player {
 
   move(point: Point): void {
     if (this.game) {
-      this.game.move(this, point)
+      this.game.move(this, point);
     } else {
       throw new Error("Player is not associated with a game.");
     }
@@ -23,7 +22,7 @@ class Player {
 
   isBot(): boolean {
     const index = this.user?.name.indexOf("BOT_");
-    return index == -1 ? false : true
+    return index == -1 ? false : true;
   }
 }
 

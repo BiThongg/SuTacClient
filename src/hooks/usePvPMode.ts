@@ -9,22 +9,25 @@ import User from "@app/user/User";
 import { ModalContext } from "@context/ContextModal";
 import { useNavigate } from "react-router-dom";
 
-
 export default function usePvPMode(): GameHook {
   const navigate = useNavigate();
   const [game, setGame] = useState<Game>(window?.game || {});
-  const [user, __] = useState<User>(localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user') || '{}') : {});
+  const [user, __] = useState<User>(
+    localStorage.getItem("user")
+      ? JSON.parse(localStorage.getItem("user") || "{}")
+      : {}
+  );
   const modal = useContext(ModalContext);
 
-  const player: Player = game.players.filter(player =>
-    player?.user?.id === user.id
-  )[0]
+  const player: Player = game.players.filter(
+    (player) => player?.user?.id === user.id
+  )[0];
 
-  socketService.listen('moved', (data: { game: Game }) => {
-    setGame(data.game)
+  socketService.listen("moved", (data: { game: Game }) => {
+    setGame(data.game);
   });
 
-  socketService.listen('ended_game', (data: any) => {
+  socketService.listen("ended_game", (data: any) => {
     setTimeout(() => {
       modal?.setModal({
         showModal: true,
@@ -38,23 +41,25 @@ export default function usePvPMode(): GameHook {
         btnGray: "",
         isNextRound: false,
       });
-      window.game = {};
-      navigate('/room');
-    }, 500)
+      window.game = undefined;
+      navigate("/room");
+    }, 500);
   });
 
-  const onMove = (point: { x: number, y: number }) => {
+  const onMove = (point: { x: number; y: number }) => {
     const gameTurn: Cell = game?.turn;
 
     if (gameTurn === player.symbol) {
-      const moveRequest: PersonMoveRequest = { "room_id": window?.room?.id, "point": point, "user_id": user.id };
-      socketService.emit('move', moveRequest);
-    }
-
-    else {
+      const moveRequest: PersonMoveRequest = {
+        room_id: window?.room?.id,
+        point: point,
+        user_id: user.id,
+      };
+      socketService.emit("move", moveRequest);
+    } else {
       alert("Not your turn");
     }
-  }
+  };
 
   return { game, onMove };
 }

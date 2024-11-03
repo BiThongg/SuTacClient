@@ -28,8 +28,8 @@ const router = () => {
     },
     {
       path: "/room",
-      element: <Room />
-    }
+      element: <Room />,
+    },
   ]);
   return routes;
 };

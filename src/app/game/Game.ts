@@ -1,5 +1,5 @@
-import { Player } from '../player/Player';
-import Point, { Cell } from '../Utils';
+import { Player } from "../player/Player";
+import Point, { Cell } from "../Utils";
 
 export default abstract class Game {
   turn: Cell = Cell.X;
@@ -8,7 +8,7 @@ export default abstract class Game {
 
   constructor(size: number) {
     this.board = Array.from({ length: size }, () =>
-      Array(size).fill(Cell.EMPTY)
+      Array(size).fill(Cell.EMPTY),
     );
   }
 
@@ -20,7 +20,7 @@ export default abstract class Game {
     return this.players.find((player) => player.symbol === this.turn);
   }
 
-  move(player:Player , point: Point): void {
+  move(player: Player, point: Point): void {
     if (this.turn !== player.symbol) {
       throw new Error("Not your turn");
     }

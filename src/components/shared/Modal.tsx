@@ -5,7 +5,6 @@ import type { Modal } from "@interfaces/Modal";
 import { ModalContext, state } from "@context/ContextModal";
 import { useNavigate } from "react-router-dom";
 
-
 export default function Modal({
   showModal,
   btnGray,
@@ -60,15 +59,18 @@ export default function Modal({
                     )}
 
                     <div className="flex justify-center items-center gap-2 mt-3">
-                      {btnGray && <div
-                        onClick={() => handleBtnGray(btnGray)}
-                        className={`${btnGray === "quit" ? `w-1/4 md:w-auto` : `w-auto`
+                      {btnGray && (
+                        <div
+                          onClick={() => handleBtnGray(btnGray)}
+                          className={`${
+                            btnGray === "quit" ? `w-1/4 md:w-auto` : `w-auto`
                           } bg-gray-500 rounded-2xl pb-2`}
-                      >
-                        <Btn classCSS="bg-gray-400 rounded-2xl w-full py-2 px-2">
-                          {btnGray}
-                        </Btn>
-                      </div>}
+                        >
+                          <Btn classCSS="bg-gray-400 rounded-2xl w-full py-2 px-2">
+                            {btnGray}
+                          </Btn>
+                        </div>
+                      )}
 
                       <div
                         onClick={handleNewRound}

@@ -40,7 +40,6 @@ function Score({
         <span className="block uppercase text-xs">o ({handleCPU(false)})</span>
         <span className="font-bold block">{score.playerO}</span>
       </Btn>
-
     </section>
   );
 }

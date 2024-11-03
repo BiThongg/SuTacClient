@@ -23,8 +23,7 @@ function Home() {
     if (isLoading) {
       socketService.connect();
     }
-  }, [isLoading])
-
+  }, [isLoading]);
 
   // useEffect(() => {
   //   if (isLoading) {
@@ -55,20 +54,18 @@ function Home() {
   //
   // }, [isLoading])
 
-
   useEffect(() => {
     if (!window.localStorage.getItem("user")) {
       navigate("/auth");
     } else {
-      setUser(JSON.parse(window.localStorage.getItem("user") || "{}"))
+      setUser(JSON.parse(window.localStorage.getItem("user") || "{}"));
     }
   }, []);
 
-
   useEffect(() => {
     const onJoinRoomSuccess = (data: { room: RoomClass }) => {
-      navigate("/room")
-    }
+      navigate("/room");
+    };
 
     const onJoinRoomFailed = (data: { message: string }) => {
       modal?.setModal({
@@ -83,81 +80,100 @@ function Home() {
         btnGray: "no, cancel",
         isNextRound: false,
       });
-    }
+    };
 
-    socketService.listen("room_created", (data: { room: RoomClass }) => onJoinRoomSuccess(data))
-    socketService.listen("joined_room", (data: { room: RoomClass }) => onJoinRoomSuccess(data))
-    socketService.listen("join_room_failed", (data: { message: string }) => onJoinRoomFailed(data))
+    socketService.listen("room_created", (data: { room: RoomClass }) =>
+      onJoinRoomSuccess(data)
+    );
+    socketService.listen("joined_room", (data: { room: RoomClass }) =>
+      onJoinRoomSuccess(data)
+    );
+    socketService.listen("join_room_failed", (data: { message: string }) =>
+      onJoinRoomFailed(data)
+    );
 
     return () => {
-      socketService.removeListener("room_created", onJoinRoomSuccess)
-      socketService.removeListener("joined_room", onJoinRoomSuccess)
-      socketService.removeListener("join_room_failed", onJoinRoomFailed)
-    }
-
-  }, [])
-
-
+      socketService.removeListener("room_created", onJoinRoomSuccess);
+      socketService.removeListener("joined_room", onJoinRoomSuccess);
+      socketService.removeListener("join_room_failed", onJoinRoomFailed);
+    };
+  }, []);
 
   const handleJoinRoom = () => {
-    socketService.emit("join_room", { room_id: roomIdRef.current?.value, user_id: user?.id })
-  }
+    socketService.emit("join_room", {
+      room_id: roomIdRef.current?.value,
+      user_id: user?.id,
+    });
+  };
 
   const onCreateRoom = () => {
-    console.log({ room_name: "", user_id: user?.id })
-    socketService.emit("create_room", { room_name: "", user_id: user?.id })
-  }
-  // how to add a new func for listening event from server 
+    console.log({ room_name: "", user_id: user?.id });
+    socketService.emit("create_room", { room_name: "", user_id: user?.id });
+  };
+  // how to add a new func for listening event from server
 
   const handlePickPlayer = () => setPickPlayer(!pickPlayer);
 
-  return (
-    isLoading ? <Loading /> :
-      <section className="h-[70vh] w-full sm:w-[60%] lg:w-[40%] flex flex-col items-center justify-center gap-10">
-        <Logo width={10} height={10} />
-        <article className="bg-black-300 w-[90%] rounded-lg p-5 text-center">
-          <h1 className="font-bold mb-5 text-lg">Hello {user?.name}</h1>
+  return isLoading ? (
+    <Loading />
+  ) : (
+    <section className="w-full sm:w-[60%] lg:w-[40%] flex flex-col items-center justify-center gap-10">
+      <Logo width={10} height={10} />
+      <article className="bg-black-300 w-[90%] rounded-lg p-5 text-center">
+        <h1 className="font-bold mb-5 text-lg">Hello {user?.name}</h1>
 
-          <article className="bg-black-400 py-3 rounded-lg flex w-full mb-5">
-            <button
-              onClick={() => !pickPlayer && handlePickPlayer()}
-              className={`${pickPlayer && `bg-gray-400 rounded-lg px-3 py-3 ml-3`
-                } w-1/2 mx-auto flex justify-center items-center`}
-            >
-              <XOutline state={!pickPlayer} />
-            </button>
-            <button
-              onClick={() => pickPlayer && handlePickPlayer()}
-              className={`${!pickPlayer && `bg-gray-400 rounded-lg px-6 py-3 mr-3`
-                } w-1/2 mx-auto flex justify-center items-center`}
-            >
-              <OOutline state={pickPlayer} />
-            </button>
-          </article>
-
-          <h3 className="text-gray-500">REMEMBER : X GOES FIRST</h3>
+        <article className="bg-black-400 py-3 rounded-lg flex w-full mb-5">
+          <button
+            onClick={() => !pickPlayer && handlePickPlayer()}
+            className={`${
+              pickPlayer && `bg-gray-400 rounded-lg px-3 py-3 ml-3`
+            } w-1/2 mx-auto flex justify-center items-center`}
+          >
+            <XOutline state={!pickPlayer} />
+          </button>
+          <button
+            onClick={() => pickPlayer && handlePickPlayer()}
+            className={`${
+              !pickPlayer && `bg-gray-400 rounded-lg px-6 py-3 mr-3`
+            } w-1/2 mx-auto flex justify-center items-center`}
+          >
+            <OOutline state={pickPlayer} />
+          </button>
         </article>
 
-        <article className="flex flex-col gap-3 w-[90%]">
-          <div
-            onClick={() => { onCreateRoom() }}
-            className="w-full bg-yellow-500 rounded-2xl pb-2"
-          >
-            <Btn classCSS="bg-yellow-400 rounded-2xl w-full py-2">
-              Create Room
-            </Btn>
-          </div>
+        <h3 className="text-gray-500">REMEMBER : X GOES FIRST</h3>
+      </article>
 
-          <div
-            className="w-full rounded-2xl pb-2 flex flex-row gap-2"
+      <article className="flex flex-col gap-3 w-[90%]">
+        <div
+          onClick={() => {
+            onCreateRoom();
+          }}
+          className="w-full bg-yellow-500 rounded-2xl pb-2"
+        >
+          <Btn classCSS="bg-yellow-400 rounded-2xl w-full py-2">
+            Create Room
+          </Btn>
+        </div>
+
+        <div className="w-full rounded-2xl pb-2 flex flex-row gap-2">
+          <input
+            type="text"
+            placeholder="ROOM ID"
+            className="bg-blue-400 rounded-2xl grow text-black-400 text-center placeholder-gray-300"
+            ref={roomIdRef}
+          />
+          <Btn
+            classCSS="bg-blue-400 rounded-2xl py-2 grow-0 px-1"
+            onClick={() => {
+              handleJoinRoom();
+            }}
           >
-            <input type="text" placeholder="ROOM ID" className="bg-blue-400 rounded-2xl grow text-black-400 text-center placeholder-gray-300" ref={roomIdRef} />
-            <Btn classCSS="bg-blue-400 rounded-2xl py-2 grow-0 px-1" onClick={() => { handleJoinRoom() }}>
-              Join Room
-            </Btn>
-          </div>
-        </article>
-      </section>
+            Join Room
+          </Btn>
+        </div>
+      </article>
+    </section>
   );
 }
 export default Home;

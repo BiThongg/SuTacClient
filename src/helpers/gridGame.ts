@@ -1,4 +1,3 @@
-
 export interface GridGame {
   id: number;
   value: string;
@@ -10,17 +9,19 @@ export interface GridGame {
 // build the 2 dimentional array with 15x15 grid or 3x3 grid
 //
 
-
-export const ticTacToeBoard: GridGame[][] = Array.from({ length: 3 }, (_, i) => {
-  return Array.from({ length: 3 }, (_, j) => {
-    return {
-      id: i + 300*j,
-      value: "",
-      icon: "",
-      isWinner: "",
-    };
-  });
-});
+export const ticTacToeBoard: GridGame[][] = Array.from(
+  { length: 3 },
+  (_, i) => {
+    return Array.from({ length: 3 }, (_, j) => {
+      return {
+        id: i + 300 * j,
+        value: "",
+        icon: "",
+        isWinner: "",
+      };
+    });
+  },
+);
 
 export const sumokuBoard: GridGame[][] = Array.from({ length: 15 }, (_, i) => {
   return Array.from({ length: 15 }, (_, j) => {

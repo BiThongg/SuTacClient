@@ -7,8 +7,7 @@ import { ModalContext } from "@context/ContextModal";
 import { useContext } from "react";
 import { Cell } from "@app/Utils";
 
-
-function Header({ isTurnX }: { isTurnX: String}) {
+function Header({ isTurnX }: { isTurnX: String }) {
   const modal = useContext(ModalContext);
 
   const handleRestart = () => {
