@@ -8,9 +8,6 @@ import usePvPMode from "@hooks/usePvPMode";
 import ChessTimer from "./ChessTimer";
 import IconBox from "@components/room/IconBox";
 
-
-
-
 export default function Game() {
   const { isLoading }: { isLoading: boolean } = useSocketConnect();
   const sizeBoard = window?.game?.board.length;
@@ -35,14 +32,14 @@ export default function Game() {
     <div className="flex flex-col items-center ">
       <ChessTimer game={game} initialTime={30} />
       <IconBox game={game} />
-      <section className="w-[90%] lg:w-full overflow-auto flex">
-        <div className="px-8"></div>
+      <section className="w-[90vw] overflow-auto flex">
+        {/* <div className="px-8"></div> */}
         {sizeBoard === 3 ? (
           <TicTacToeBoard board={game?.board} onMove={onMove} />
         ) : (
           <SumokuBoard board={game?.board} onMove={onMove} />
         )}
-        <div className="px-8"></div>
+        {/* <div className="px-8"></div> */}
       </section>
     </div>
   );
