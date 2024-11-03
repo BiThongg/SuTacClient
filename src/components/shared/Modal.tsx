@@ -74,7 +74,7 @@ export default function Modal({
 
                       <div
                         onClick={handleNewRound}
-                        className="w-1/2 lg:w-auto bg-yellow-500 rounded-2xl pb-2"
+                        className="w-1/2 lg:w-auto bg-yellow-500 rounded-2xl pb-2 min-w-[100px]"
                       >
                         <Btn classCSS="bg-yellow-400 rounded-2xl w-full py-2 px-2">
                           {btnYellow}

@@ -43,7 +43,7 @@ const IconBox: React.FC<IIconBoxComponentProps> = ({ game }) => {
     const competitor: any | User = game.players.find(
       (player) =>
         player.user?.id !==
-        JSON.parse(`${window.localStorage.getItem("user")}`).id,
+        JSON.parse(`${window.localStorage.getItem("user")}`).id
     )?.user;
 
     setCompetitor(competitor);
@@ -109,7 +109,7 @@ const IconBox: React.FC<IIconBoxComponentProps> = ({ game }) => {
         </div>
       </div>
       {showIcons && (
-        <div className="flex flex-row gap-3 pb-20 pt-10">
+        <div className="flex flex-row gap-3 pb-5">
           {emotionalIcons.map(({ key, color }) => (
             <div
               key={key}
