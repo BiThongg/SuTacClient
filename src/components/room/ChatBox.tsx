@@ -17,7 +17,7 @@ const ChatBox: React.FC<IChatBoxProps> = ({ currentUserId, roomId }) => {
   const [chat, setChat] = useState<IMessage[]>([]);
 
   useEffect(() => {
-    socketService.listen("receive_message", (newMessage) => {
+    const handleReceiveMessage = (newMessage: any) => {
       setChat((prevChat) => [
         ...prevChat,
         {
@@ -26,10 +26,20 @@ const ChatBox: React.FC<IChatBoxProps> = ({ currentUserId, roomId }) => {
           userId: newMessage.user_id,
         },
       ]);
-    });
+
+      const timeout = setTimeout(() => {
+        const chatBox = document.querySelector(".h-80");
+        chatBox?.scrollTo(0, chatBox.scrollHeight);
+        clearTimeout(timeout);
+      }, 100);
+    };
+
+    socketService.listen("receive_message", (newMessage) =>
+      handleReceiveMessage(newMessage),
+    );
 
     return () => {
-      socketService.offListener("receive_message");
+      socketService.offListener("receive_message", handleReceiveMessage);
     };
   }, []);
 
@@ -42,8 +52,8 @@ const ChatBox: React.FC<IChatBoxProps> = ({ currentUserId, roomId }) => {
   };
 
   return (
-    <div className="bg-black-300 w-[90%] rounded-lg p-5 max-w-md mx-auto rounded-lg">
-      <div className="h-80 overflow-y-none p-2 mb-4">
+    <div className="bg-black-300 w-[90%] p-5 max-w-md mx-auto rounded-lg">
+      <div className="h-80 p-2 mb-4 overflow-y-auto rounded-lg">
         {chat.map((msg, index) => (
           <div
             key={index}
@@ -61,7 +71,7 @@ const ChatBox: React.FC<IChatBoxProps> = ({ currentUserId, roomId }) => {
               <p className="text-sm font-semibold mb-1">
                 {msg.userId === currentUserId ? "You" : msg.name}
               </p>
-              <p>{msg.message}</p>
+              <p className="break-all">{msg.message}</p>
             </div>
           </div>
         ))}

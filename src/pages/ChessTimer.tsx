@@ -43,8 +43,8 @@ const ChessTimer: React.FC<IChessTimerProps> = ({ game, initialTime }) => {
       game.players.find(
         (player) =>
           player.user?.id ===
-          JSON.parse(`${window.localStorage.getItem("user")}`).id
-      )
+          JSON.parse(`${window.localStorage.getItem("user")}`).id,
+      ),
     );
     setCurrentState({
       title: mySelf?.symbol == game.turn ? "Your Turn" : "Competitor Turn",

@@ -1024,6 +1024,11 @@ react-dom@^18.2.0:
     loose-envify "^1.1.0"
     scheduler "^0.23.0"
 
+react-icons@^5.3.0:
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/react-icons/-/react-icons-5.3.0.tgz#ccad07a30aebd40a89f8cfa7d82e466019203f1c"
+  integrity sha512-DnUk8aFbTyQPSkCfF8dbX6kQjXA9DktMeJqfjrg6cK9vwQVMxmcA3BfP4QoiztVmEHtwlTgLFsPuH2NskKT6eg==
+
 react-refresh@^0.14.0:
   version "0.14.0"
   resolved "https://registry.npmjs.org/react-refresh/-/react-refresh-0.14.0.tgz"
@@ -1194,10 +1199,11 @@ tailwindcss@^3.2.7:
     match-sorter "^6.3.1"
     react "^18.2.0"
     react-dom "^18.2.0"
+    react-icons "^5.3.0"
     react-router-dom "^6.8.1"
     socket.io-client "^4.7.5"
     sort-by "^1.2.0"
-    tic-tac-toe "file:C:/Users/khoakomlem/AppData/Local/Yarn/Cache/v6/npm-tic-tac-toe-0.0.0-048e18bb-b53a-4da2-944c-657a2bce897e-1730593642357/node_modules/tic-tac-toe"
+    tic-tac-toe "file:../../../.cache/yarn/v6/npm-tic-tac-toe-0.0.0-36f9e9a1-77c8-4794-80e5-25167345114e-1730645888395/node_modules/tic-tac-toe"
 
 to-fast-properties@^2.0.0:
   version "2.0.0"

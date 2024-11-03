@@ -11,7 +11,7 @@ import socketService from "@app/socket/Socket";
 import useSocketConnect from "@hooks/useSocketConnect";
 import { ModalContext } from "@context/ContextModal";
 import RingSpin from "@assets/ring-resize.svg";
-import ChatBox from "./ChatBox";
+import ChatBox from "@components/room/ChatBox";
 
 enum GameType {
   SUMOKU = "CASUAL",
@@ -21,7 +21,7 @@ enum GameType {
 export default function Room() {
   const [pickGameType, setGameType] = useState<string>(GameType.TIC_TAC_TOE);
   const [player, _] = useState<User>(
-    JSON.parse(localStorage.getItem("user") || "{}")
+    JSON.parse(localStorage.getItem("user") || "{}"),
   );
   const [room, setRoom] = useState<RoomClass>();
   const navigate = useNavigate();
@@ -46,7 +46,7 @@ export default function Room() {
     };
 
     socketService.listen("room_info", (data: { room: RoomClass }) =>
-      handleFetchRoom(data)
+      handleFetchRoom(data),
     );
 
     const interval = setInterval(() => {
@@ -159,28 +159,28 @@ export default function Room() {
     socketService.listen(
       "game_type_changed",
       (data: { game_type: string; room_id: string }) =>
-        handleChangeGameType(data)
+        handleChangeGameType(data),
     );
     socketService.listen(
       "started_game",
-      (data: { message: string; game: Game }) => handleStartGame(data)
+      (data: { message: string; game: Game }) => handleStartGame(data),
     );
     socketService.listen(
       "kicked",
-      (data: { room: RoomClass; kicked_id: string }) => handleKick(data)
+      (data: { room: RoomClass; kicked_id: string }) => handleKick(data),
     );
     socketService.listen("added_bot", (data: { room: RoomClass }) =>
-      onListenAddBotEvent(data)
+      onListenAddBotEvent(data),
     );
     socketService.listen("start_game_failed", (data: { message: string }) =>
-      handleStartGameFailed(data)
+      handleStartGameFailed(data),
     );
     socketService.listen("joined_room", (data: { room: RoomClass }) =>
-      handleJoinRoom(data)
+      handleJoinRoom(data),
     );
     socketService.listen(
       "leaved_room",
-      (data: { room: RoomClass; leave_id: string }) => handleLeaveRoom(data)
+      (data: { room: RoomClass; leave_id: string }) => handleLeaveRoom(data),
     );
     // socketService.listen("room_destroyed", (data: { message: string }) => onRoomDestroyed(data));
 
@@ -295,9 +295,9 @@ export default function Room() {
           </div>
         )}
 
-        <div className="w-[20%] pb-2 cursor-auto flex flex-row gap-2 w-full">
+        <div className="pb-2 cursor-auto flex flex-row gap-2 w-full">
           <Btn
-            classCSS="bg-blue-400 rounded-2xl w-full py-2"
+            classCSS="bg-blue-400 rounded-2xl w-full py-2 basis-1/2 shrink-0"
             onClick={() => {
               // console.log(room)
             }}
@@ -308,9 +308,9 @@ export default function Room() {
           </Btn>
 
           {room?.competitor ? (
-            <div className="bg-blue-400 rounded-2xl w-full flex justify-center gap-10 text-black-400 text-[15px] p-3 py-4">
+            <div className="bg-blue-400 rounded-2xl w-full flex justify-center text-black-400 text-[15px] p-3 py-4 basis-1/2 items-center gap-x-1">
               <div className="text-white line-clamp-2 ">
-                {room?.competitor?.info?.name}
+                {room?.competitor?.info.name}
               </div>
               {room.owner.info.id === player.id && (
                 <button
@@ -328,7 +328,7 @@ export default function Room() {
               )}
             </div>
           ) : (
-            <div className="bg-blue-400 rounded-2xl w-full py-2 flex justify-around text-black-400 text-[15px] p-3 gap-3">
+            <div className="bg-blue-400 rounded-2xl w-full py-2 flex justify-around text-black-400 text-[15px] p-3 basis-1/2">
               <div className="flex justify-center items-center gap-3 text-[15px]">
                 <p className="">Waiting</p>
                 <img src={RingSpin} className="text-white" />

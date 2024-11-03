@@ -11,22 +11,15 @@ export default function TicTacToeBoard({
   onMove: (point: { x: number; y: number }) => void;
 }) {
   return (
-    <section className="grid grid-cols-3 gap-5 w-[90%] mx-auto mb-10">
+    <section className="grid grid-cols-3 gap-5 w-[500px] min-w-[500px] mx-auto mb-10  overflow-auto">
       {board.map((row, i) =>
         row.map((col, j) => (
           <div
             key={j}
-            className="pb-2 bg-black-500 w-full h-[99px] rounded-md"
-            // data-value={value}
+            className="pb-2 bg-black-500 w-full h-[99px] min-w-[100px] rounded-md"
           >
             <Btn
-              // classCSS={`${isWinner === "X"
-              //   ? "bg-blue-400"
-              //   : isWinner === "O"
-              //     ? "bg-yellow-400"
-              //     : "bg-black-300"
-              //   } rounded-md py-6 h-full w-full`}
-              classCSS="bg-black-300 rounded-md py-6 h-full w-full"
+              classCSS="bg-black-300 rounded-md py-6 h-full w-full "
               onClick={() => onMove({ x: j, y: i })}
             >
               <img
