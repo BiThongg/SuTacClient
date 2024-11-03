@@ -247,9 +247,10 @@ export default function Room() {
         <article className="bg-black-400 py-3 rounded-lg flex w-full mb-5">
           <button
             onClick={() => handlePickGameType(GameType.SUMOKU)}
-            className={`${pickGameType === GameType.SUMOKU &&
+            className={`${
+              pickGameType === GameType.SUMOKU &&
               `bg-gray-400 rounded-lg px-3 py-3 ml-3`
-              } w-1/2 mx-auto flex justify-center items-center ${preventPointer}`}
+            } w-1/2 mx-auto flex justify-center items-center ${preventPointer}`}
           >
             <p
               className={
@@ -263,9 +264,10 @@ export default function Room() {
           </button>
           <button
             onClick={() => handlePickGameType(GameType.TIC_TAC_TOE)}
-            className={`${pickGameType === GameType.TIC_TAC_TOE &&
+            className={`${
+              pickGameType === GameType.TIC_TAC_TOE &&
               `bg-gray-400 rounded-lg px-6 py-3 mr-3`
-              } w-1/2 mx-auto flex justify-center items-center ${preventPointer}`}
+            } w-1/2 mx-auto flex justify-center items-center ${preventPointer}`}
           >
             <p
               className={
@@ -293,9 +295,9 @@ export default function Room() {
           </div>
         )}
 
-        <div className="w-[20%] pb-2 cursor-auto flex flex-row gap-2 w-full">
+        <div className="pb-2 cursor-auto flex flex-row gap-2 w-full">
           <Btn
-            classCSS="bg-blue-400 rounded-2xl w-full py-2"
+            classCSS="bg-blue-400 rounded-2xl w-full py-2 basis-1/2 shrink-0"
             onClick={() => {
               // console.log(room)
             }}
@@ -306,9 +308,9 @@ export default function Room() {
           </Btn>
 
           {room?.competitor ? (
-            <div className="bg-blue-400 rounded-2xl w-full flex justify-center gap-10 text-black-400 text-[15px] p-3 py-4">
+            <div className="bg-blue-400 rounded-2xl w-full flex justify-center text-black-400 text-[15px] p-3 py-4 basis-1/2 items-center gap-x-1">
               <div className="text-white line-clamp-2 ">
-                {room?.competitor?.info?.name}
+                {room?.competitor?.info.name}
               </div>
               {room.owner.info.id === player.id && (
                 <button
@@ -326,7 +328,7 @@ export default function Room() {
               )}
             </div>
           ) : (
-            <div className="bg-blue-400 rounded-2xl w-full py-2 flex justify-around text-black-400 text-[15px] p-3 gap-3">
+            <div className="bg-blue-400 rounded-2xl w-full py-2 flex justify-around text-black-400 text-[15px] p-3 basis-1/2">
               <div className="flex justify-center items-center gap-3 text-[15px]">
                 <p className="">Waiting</p>
                 <img src={RingSpin} className="text-white" />

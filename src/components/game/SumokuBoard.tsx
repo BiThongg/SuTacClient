@@ -10,7 +10,7 @@ export default function SumokuBoard({
   onMove: (point: { x: number; y: number }) => void;
 }) {
   return (
-    <table className="w-[700px] table-fixed border-collapse">
+    <table className="w-[700px] table-fixed border-collapse mx-auto">
       <tbody>
         {board.map((row, i) => (
           <tr
