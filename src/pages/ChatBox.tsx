@@ -15,14 +15,17 @@ interface IChatBoxProps {
 const ChatBox: React.FC<IChatBoxProps> = ({ currentUserId, roomId }) => {
   const [message, setMessage] = useState<string>('');
   const [chat, setChat] = useState<IMessage[]>([]);
-
+  
   useEffect(() => {
-    socketService.listen('receive_message', (newMessage) => {
-      setChat((prevChat) => [...prevChat, {name: newMessage.name, message: newMessage.message, userId: newMessage.user_id}]);
-    });
+    const handleReceiveMessage = (newMessage: any): void => {
+      setChat((prevChat) => [...prevChat, 
+        { name: newMessage.name, message: newMessage.message, userId: newMessage.user_id }]);
+    }
+
+    socketService.listen('receive_message', handleReceiveMessage);
 
     return () => {
-        socketService.offListener('receive_message');
+      socketService.offListener('receive_message', handleReceiveMessage);
     };
   }, []);
 
@@ -35,8 +38,8 @@ const ChatBox: React.FC<IChatBoxProps> = ({ currentUserId, roomId }) => {
   };
 
   return (
-    <div className="bg-black-300 w-[90%] rounded-lg p-5 max-w-md mx-auto rounded-lg">
-      <div className="h-80 overflow-y-none p-2 mb-4">
+    <div className="bg-black-300 w-[90%]  rounded-lg p-5 max-w-md mx-auto rounded-lg">
+      <div className="h-80 overflow-x-none overflow-y-scroll p-2 mb-4">
         {chat.map((msg, index) => (
           <div
             key={index}
