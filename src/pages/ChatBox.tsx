@@ -26,6 +26,12 @@ const ChatBox: React.FC<IChatBoxProps> = ({ currentUserId, roomId }) => {
           userId: newMessage.user_id,
         },
       ]);
+
+      const timeout = setTimeout(() => {
+        const chatBox = document.querySelector(".h-80");
+        chatBox?.scrollTo(0, chatBox.scrollHeight);
+        clearTimeout(timeout);
+      }, 100);
     });
 
     return () => {
@@ -42,26 +48,25 @@ const ChatBox: React.FC<IChatBoxProps> = ({ currentUserId, roomId }) => {
   };
 
   return (
-    <div className="bg-black-300 w-[90%] rounded-lg p-5 max-w-md mx-auto rounded-lg">
-      <div className="h-80 overflow-y-none p-2 mb-4">
+
+    <div className="bg-black-300 w-[90%] p-5 max-w-md mx-auto rounded-lg">
+      <div className="h-80 p-2 mb-4 overflow-y-auto rounded-lg">
         {chat.map((msg, index) => (
           <div
             key={index}
-            className={`flex ${
-              msg.userId === currentUserId ? "justify-end" : "justify-start"
-            } mb-2`}
+            className={`flex ${msg.userId === currentUserId ? "justify-end" : "justify-start"
+              } mb-2`}
           >
             <div
-              className={`rounded-lg p-2 ${
-                msg.userId === currentUserId
-                  ? "bg-blue-500 text-white max-w-xs text-right"
-                  : "bg-gray-200 text-gray-900 max-w-xs"
-              }`}
+              className={`rounded-lg p-2 ${msg.userId === currentUserId
+                ? "bg-blue-500 text-white max-w-xs text-right"
+                : "bg-gray-200 text-gray-900 max-w-xs"
+                }`}
             >
               <p className="text-sm font-semibold mb-1">
                 {msg.userId === currentUserId ? "You" : msg.name}
               </p>
-              <p>{msg.message}</p>
+              <p className="break-all">{msg.message}</p>
             </div>
           </div>
         ))}
@@ -71,6 +76,8 @@ const ChatBox: React.FC<IChatBoxProps> = ({ currentUserId, roomId }) => {
           type="text"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
+          // set color for input when focus
+
           placeholder="Type a message"
           className="flex-grow border border-gray-300 rounded-l-lg p-2 focus:outline-none"
         />
