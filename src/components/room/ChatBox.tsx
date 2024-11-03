@@ -28,7 +28,7 @@ const ChatBox: React.FC<IChatBoxProps> = ({ currentUserId, roomId }) => {
       ]);
 
       const timeout = setTimeout(() => {
-        const chatBox = document.querySelector(".h-80");
+        const chatBox = document.getElementById("chat-box");
         chatBox?.scrollTo(0, chatBox.scrollHeight);
         clearTimeout(timeout);
       }, 100);
@@ -52,8 +52,9 @@ const ChatBox: React.FC<IChatBoxProps> = ({ currentUserId, roomId }) => {
   };
 
   return (
-    <div className="bg-black-300 w-[90%] p-5 max-w-md mx-auto rounded-lg">
-      <div className="h-80 p-2 mb-4 overflow-y-auto rounded-lg">
+    <div className="bg-black-300 w-[90%] p-5 max-w-md mx-auto rounded-lg" >
+      <h2 className="text-lg font-semibold mb-4">PYTHON BOX CHAT</h2>
+      <div className="h-44 p-2 mb-4 overflow-y-auto rounded-lg" id="chat-box">
         {chat.map((msg, index) => (
           <div
             key={index}
