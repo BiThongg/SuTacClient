@@ -140,6 +140,30 @@ export default function Room() {
       navigate("/");
     };
 
+    const handleDetectedCheating = (data: { message: string }) => {
+      const alert = document.createElement('div');
+      alert.className = 'fixed top-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+      alert.textContent = data.message;
+      document.body.appendChild(alert);
+      setTimeout(() => alert.remove(), 3000);
+    };
+
+    const handleDetectedAnomaly = (data: { message: string }) => {
+      const alert = document.createElement('div');
+      alert.className = 'fixed top-4 right-4 bg-yellow-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+      alert.textContent = data.message;
+      document.body.appendChild(alert);
+      setTimeout(() => alert.remove(), 3000);
+    };
+
+    const handleDetectedSpamming = (data: { message: string }) => {
+      const alert = document.createElement('div');
+      alert.className = 'fixed top-4 right-4 bg-orange-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+      alert.textContent = data.message;
+      document.body.appendChild(alert);
+      setTimeout(() => alert.remove(), 3000);
+    };
+
     const onRoomDestroyed = (data: { message: string }) => {
       modal?.setModal({
         showModal: true,
@@ -182,6 +206,9 @@ export default function Room() {
       "leaved_room",
       (data: { room: RoomClass; leave_id: string }) => handleLeaveRoom(data),
     );
+    socketService.listen("detected_cheating", handleDetectedCheating);
+    socketService.listen("detected_anomaly", handleDetectedAnomaly);
+    socketService.listen("detected_spamming", handleDetectedSpamming);
     // socketService.listen("room_destroyed", (data: { message: string }) => onRoomDestroyed(data));
 
     return () => {
@@ -192,6 +219,9 @@ export default function Room() {
       socketService.removeListener("start_game_failed", handleStartGameFailed);
       socketService.removeListener("joined_room", handleJoinRoom);
       socketService.removeListener("leave_room", handleLeaveRoom);
+      socketService.removeListener("detected_cheating", handleDetectedCheating);
+      socketService.removeListener("detected_anomaly", handleDetectedAnomaly);
+      socketService.removeListener("detected_spamming", handleDetectedSpamming);
       // socketService.removeListener("room_destroyed", onRoomDestroyed);
     };
   }, []);

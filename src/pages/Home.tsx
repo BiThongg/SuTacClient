@@ -82,6 +82,14 @@ function Home() {
       });
     };
 
+    const handleDetectedSpamming = (data: { message: string }) => {
+      const alert = document.createElement('div');
+      alert.className = 'fixed top-4 right-4 bg-orange-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+      alert.textContent = data.message;
+      document.body.appendChild(alert);
+      setTimeout(() => alert.remove(), 3000);
+    };
+
     socketService.listen("room_created", (data: { room: RoomClass }) =>
       onJoinRoomSuccess(data),
     );
@@ -91,11 +99,13 @@ function Home() {
     socketService.listen("join_room_failed", (data: { message: string }) =>
       onJoinRoomFailed(data),
     );
+    socketService.listen("detected_spamming", handleDetectedSpamming);
 
     return () => {
       socketService.removeListener("room_created", onJoinRoomSuccess);
       socketService.removeListener("joined_room", onJoinRoomSuccess);
       socketService.removeListener("join_room_failed", onJoinRoomFailed);
+      socketService.removeListener("detected_spamming", handleDetectedSpamming);
     };
   }, []);
 
